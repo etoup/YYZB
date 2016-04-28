@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>购物车</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/cart.css"/>
+</head>
+<body>
+<div id="header">
+   <div class="cart active">
+	    <div class="icon_box" tapmode="" onclick="api.closeWin()"><i class="iconfont icon-fanhui"></i></div>
+	    <div class="toptit">购物车</div>
+	    <div class="icon_box" tapmode="" onclick="backhome()"><i class="iconfont icon-shouye"></i></div>
+   </div>
+</div>
+<div id="content" class="container main">
+    <form id="cart">
+    <div class="cart-list">
+        <div id="list-content">
+          
+        </div>
+        <script id="list-template" type="text/x-dot-template">
+        {{? it.goods.length}}
+        {{ for(var i=0; i< it.goods.length; i++) { }}
+        <div class="item">
+            <div class="pic" tapmode="" onclick="openWin('yunbuy_detail',{id:{{=it.goods[i].buy_id}}})"><img alt="(第{{=it.goods[i].qishu}}期) {{=it.goods[i].goods_name}}" src="{{=it.goods[i].imgurl_thumb}}" width="64"/></div>
+            <div class="info">
+                <div class="title">
+                <input value="{{=it.goods[i].id}}" name="id[]" type="checkbox" {{? it.goods[i].notbuy}}disabled{{??}}checked{{?}}/> <font tapmode="" onclick="openWin('yunbuy_detail',{id:{{=it.goods[i].buy_id}}})">(第{{=it.goods[i].qishu}}期) {{=it.goods[i].goods_name}}</font>
+                </div>
+                <p>总需{{=it.goods[i].need_num}} 人次，剩余 <em>{{=it.goods[i].end_num}}</em> 人次</p>
+                <div class="bottom">
+                                                             参与人次：
+                    <div class="number">
+                        <input class="num-input" type="text" data-id="{{=it.goods[i].id}}" data-max="{{=it.goods[i].end_num}}" value="{{=it.goods[i].qty}}" />
+                        <a tapmode="" class="num-btn btn-plus" data-pro="plus" tapmode="" href="javascript:void(0);">+</a>
+                        <a tapmode="" class="num-btn btn-minus" data-pro="minus" tapmode="" href="javascript:void(0);">-</a>
+                    </div>
+                </div>
+                <div class="bottom">
+                                                            参与多期：
+                    <div class="number">
+                        <input class="qishu-input" type="text" data-id="{{=it.goods[i].id}}" data-max="{{=it.goods[i].max_multi}}" value="{{=it.goods[i].multi}}" {{? it.open_multi !=1}}disabled{{?}}/>
+                        <a tapmode="" class="num-btn btn-qishu-plus" data-pro="plus" href="javascript:void(0);" {{? it.open_multi !=1}}style="background-color:#e7e7e7; "{{?}}>+</a>
+                        <a tapmode="" class="num-btn btn-qishu-minus" data-pro="minus" href="javascript:void(0);" {{? it.open_multi !=1}}style="background-color:#e7e7e7; "{{?}}>-</a>
+                    </div>
+                </div>
+                <a class="iconfont icon-shanchu del gray" href="javascript:;" tapmode="" onclick="delCart('{{=it.goods[i].id}}',1)"></a>
+                {{? it.goods[i].num_notbuy}}<p class="red">该期商品活动已结束，请先删除再进行结算</p>
+                {{?? it.goods[i].extData.error == 1}}<p class="red">该期夺宝限制最大参与{{=it.goods[i].extData.buynum}}人次</p>
+                {{?? it.goods[i].extData.error == 2}}<p class="red">参与该期夺宝需推荐{{=it.goods[i].extData.usernum}}人次,您未满足要求</p>
+                {{?? it.goods[i].extData.error == 3}}<p class="red">{{=it.goods[i].extData.error_text}}</p>
+                {{?}}
+            </div>
+        </div>
+        {{ } }}
+        {{??}}
+        <div class="empty">
+          <div><i class="iconfont icon-gouwuche1" style="font-size:80px;"></i></div>
+                               您的清单里还没有任何商品，<a class="blue" tapmode="" onclick="api.closeWin();opentoTab('yunbuy')">马上去逛逛~</a>
+        </div>
+        {{?}}
+        </script>
+    </div>
+    </form>
+</div>
+
+<footer class="foot-view">
+    <div class="text">
+        共参与<span id="num">0</span>件产品，总计：<em class="red"><i id="total">0.00</i> <span id="unit">夺宝币</span></em>
+    </div>
+    <div class="btn">
+        <button id="submit" class="red_btn w-button-xl">提交</button>
+    </div>
+</footer>
+<ul id="nav">
+    <li><a class="main" tapmode="active" onclick="backhome();opentoTab('main')"><i class="iconfont icon-shouye"></i><span>首页</span></a></li>
+    <li><a class="yunbuy" tapmode="active" onclick="backhome();opentoTab('yunbuy')"><i class="iconfont icon-yiyuangoujilu"></i><span>所有商品</span></a></li>
+    <li><a class="results" tapmode="active" onclick="backhome();opentoTab('results')"><i class="iconfont icon-jiang"></i><span>最新揭晓</span></a></li>
+    <li><a class="cart active" tapmode="active"><i class="iconfont icon-gouwuche"></i><span>购物车</span><em></em></a></li>
+    <li><a class="user" tapmode="active" onclick="opentoTab('user')"><i class="iconfont icon-huiyuanzhongxin"></i><span>个人中心</span></a></li>
+</ul>
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+var cart = $api.getStorage('cart');
+var open_multi = 0;
+$(function(){
+    //参与人数
+    $(".btn-plus").live('click',function(){
+        var id = $(this).parent().children('input.num-input').attr('data-id');
+        var max = $(this).parent().children('input.num-input').attr('data-max');
+        var qty = $(this).parent().children('input.num-input').val()*1;
+        if(qty < max){
+            $(this).parent().children('input.num-input').val(qty+1);
+        }
+        updateCart(id,$(this).parent().children('input.num-input').val(),'');
+    });
+    $(".btn-minus").live('click',function(){
+        var id = $(this).parent().children('input.num-input').attr('data-id');
+        var qty = $(this).parent().children('input.num-input').val()*1;
+        if(qty>1){
+            $(this).parent().children('input.num-input').val(qty-1);
+        }
+        updateCart(id,$(this).parent().children('input.num-input').val(),'');
+    });
+    $("input.num-input").live('blur',function(){
+        var id = $(this).attr('data-id');
+        var max = $(this).attr('data-max')*1;
+        if($(this).val()>max){
+            $(this).val(max);
+        }
+        if($(this).val()<=0) $(this).val(1);
+        updateCart(id,$(this).val(),'');
+    });
+    
+    //多期参与
+    $(".btn-qishu-plus").live('click',function(){
+        if(open_multi!=1) return false;
+        var id = $(this).parent().children('input.qishu-input').attr('data-id');
+        var max = $(this).parent().children('input.qishu-input').attr('data-max');
+        var multi = $(this).parent().children('input.qishu-input').val()*1;
+        if(multi < max){
+            $(this).parent().children('input.qishu-input').val(multi+1);
+        }
+        updateCart(id,'',$(this).parent().children('input.qishu-input').val());
+    });
+    $(".btn-qishu-minus").live('click',function(){
+        if(open_multi!=1) return false;
+        var id = $(this).parent().children('input.qishu-input').attr('data-id');
+        var multi = $(this).parent().children('input.qishu-input').val()*1;
+        if(multi>1){
+            $(this).parent().children('input.qishu-input').val(multi-1);
+        }
+        updateCart(id,'',$(this).parent().children('input.qishu-input').val());
+    });
+    $(".qishu-input").live('blur',function(){
+        if(open_multi!=1) return false;
+        var id = $(this).attr('data-id');
+        var max = $(this).attr('data-max')*1;
+        if($(this).val()>max){
+            $(this).val(max);
+        }
+        if($(this).val()<=0) $(this).val(1);
+        updateCart(id,'',$(this).val());
+    });
+    $("input[name='id[]']").live('click',function(){
+        showTotal();
+    });
+    $("#submit").click(function(){
+        uid = $api.getStorage('uid');
+        var page = uid ? 'checkout' : 'login';
+        var ids = "";
+        var i = 0;
+        $("input[name='id[]']").each(function(){
+        if($(this).is(':checked')){
+	            i++;
+	            ids += i==$("input[name='id[]']:checked").length ? $(this).val() :$(this).val()+',';
+	        }
+	    });
+	    if(!ids && uid){
+	      toast('请选择要购买的商品');
+	      return false;
+	    }
+        openWin(page,{ids:ids,free:api.pageParam.free});
+    });
+});
+function updateCart(id,qty,multi){
+    var ids = '';
+    var i = 0;
+    $("input[name='id[]']").each(function(){
+        if($(this).is(':checked')){
+            i++;
+            ids += i==$("input[name='id[]']:checked").length ? $(this).val() :$(this).val()+',';
+        }
+    });
+    showprog();
+    ajaxRequest('/yunbuy/updatecart', 'POST', {values:{id:id,qty:qty,ids:ids,multi:multi,cart:cart}}, function (ret, err) {
+        var data = ret.data;
+        if(data){
+           $('#total').html(data.total);
+        }
+        $api.setStorage('cart',data.cart);
+        cart = $api.getStorage('cart');
+        hideprog();
+    });
+}
+    
+function showTotal(){
+    var ids = '';
+    var i=0;
+    cart = $api.getStorage('cart');
+    $("input[name='id[]']").each(function(){
+        if($(this).is(':checked')){
+            i++;
+            ids += i==$("input[name='id[]']:checked").length ? $(this).val() :$(this).val()+',';
+        }
+    });
+    ajaxRequest('/yunbuy/updatecart', 'POST', {values:{ids:ids,cart:cart}}, function (ret, err) {
+        var data = ret.data;
+	    if(data && data.total){
+	       $('#total').html(data.total);
+	       $('.w-button-xl').removeClass('w-button-disabled').removeAttr("disabled");
+	    }else{
+	       $('.w-button-xl').addClass('w-button-disabled').attr("disabled",true);
+	       $('#total').html(0);
+	    }
+    });
+}
+function delCart(id){
+    if(id){
+        ajaxRequest('/yunbuy/delcart/'+id, 'POST', {values:{'cart':cart}}, function (ret, err) {
+	        if(ret){
+	           $api.setStorage('cart',ret.data);
+	           loadCart();
+	           api.execScript({
+	               name:'root',
+	               script: 'loadcart();'
+               });
+	        }
+	    });
+    }
+}
+function loadCart(){
+  cart = $api.getStorage('cart');
+  showprog();
+  ajaxRequest('yunbuy/cart', 'POST', {values:{'cart':cart,'free':api.pageParam.free}}, function (ret, err) {
+      var data = ret.data;
+	  if(data.goods) temp(data,'list');
+	  $("#num").html(data.num);
+	  $("#unit").html(data.unit);
+	  $("#total").html(data.total);
+	  open_multi = data.open_multi;
+	  api.parseTapmode();
+	  hideprog();
+  });
+}
+apiready = function(){
+  loadCart();
+}
+
+</script>
+</body>
+</html>

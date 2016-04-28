@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no" />
+		<title>购物车</title>
+		<link rel="stylesheet" type="text/css" href="../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/user.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/member.css"/>
+	</head>
+	<body>
+		<div id="header">
+			<div class="cart active">
+				<div class="icon_box" tapmode="" onclick="api.closeWin()">
+					<i class="iconfont icon-fanhui"></i>
+				</div>
+				<div class="toptit">
+					资金管理
+				</div>
+				<div class="icon_box" tapmode="" onclick="closetoWin()">
+					<i class="iconfont icon-shouye"></i>
+				</div>
+			</div>
+		</div>
+		<div id="content" class="container main">			
+			<div class="nav-m ui-clr" id="tabmenu">
+				<ul>
+					<li class="bottom_btn member_accountlog" onclick="showTab('member_accountlog');">
+						<a >充值记录</a>
+					</li>
+					<li class="bottom_btn member_accountdetail on" onclick="showTab('member_accountdetail');">
+						<a >帐户明细</a>
+					</li>
+				</ul>
+			</div>
+			<div id="main"></div>
+			<div class="loading getMore"></div>
+			<div id="member-content"></div>
+			<script id="member-template" type="text/x-dot-template">
+			<div class="list_foot">
+				您当前的可用保证金为：<span class="color01">{{=it.member.user_money}}</span>
+				冻结保证金：<span class="color02">{{=it.member.frozen_money}}</span>
+			</div>
+			</script>
+		</div>
+		<script type="text/javascript" src="../script/jquery.min.js"></script>
+		<script type="text/javascript" src="../script/availdate.js"></script>
+		<script type="text/javascript" src="../script/fastclick.js"></script>
+		<script type="text/javascript" src="../script/api.js"></script>
+		<script type="text/javascript" src="../script/doT.min.js"></script>
+		<script type="text/javascript" src="../script/common.js"></script>
+		<script type="text/javascript">
+			var prevPid = '', curPid = '';
+		    var pageparam = {};			
+			function showTab(type, pageparam) {	
+			   					
+				var width = api.winWidth;
+				var header = $api.byId('tabmenu');
+				var headerPos = $api.offset(header);				
+				var height = api.winHeight - headerPos.h-100;
+				type = type || 'main';
+				prevPid = curPid;
+				curPid = type;
+				if (prevPid !== curPid) {					
+					api.openFrame({
+						name : type,
+						url :  type + '.html',
+						bounces : true,
+						opaque : true,
+						vScrollBarEnabled : false,
+						pageParam : pageparam,		
+						rect : {
+							x : 0,
+							y : headerPos.h+100,
+							w : width,
+							h : height
+						}
+					});	
+					if (prevPid) {
+						api.closeFrame({
+							name: prevPid
+						});
+					}					
+				}
+			}			
+
+			apiready = function() {
+				var header = $api.byId('tabmenu');
+				$api.fixIos7Bar(header);				
+				api.setStatusBarStyle({
+					style : 'light'
+				});
+				
+				var show = api.pageParam.showTab;
+				if(typeof(show)=='undefined'){
+					showTab('member_accountdetail');
+				}else{					
+					$("#tabmenu li").removeClass('on');
+				    $('.'+show).addClass('on');
+					showTab(show);
+				}
+				
+				$("#tabmenu li a").click(function(){
+				   $("#tabmenu li").removeClass('on');
+				   $(this).parent('li').addClass('on');
+				});
+				
+					
+			}
+		  </script>
+	</body>
+</html>

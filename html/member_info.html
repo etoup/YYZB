@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>购物车</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/user.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/member.css"/>
+</head>
+<body>
+<div id="header">
+   <div class="cart active">
+	    <div class="icon_box" tapmode="" onclick="api.closeWin()"><i class="iconfont icon-fanhui"></i></div>
+	    <div class="toptit">个人资料</div>
+	    <div class="icon_box " tapmode="" onclick="closetoWin()"><i class="iconfont icon-shouye"></i></div>
+   </div>
+</div>
+<div id="content" class="container main">
+<form id="submit_form">
+    <div  id="member-content"></div>
+    <script id="member-template" type="text/x-dot-template">
+    <div class="tab-m-c">
+        <div class="tips-m">
+            亲爱的 <span class="color01">{{=it.member.username}}</span><br>
+            请填写您的真实资料，有助于我们更好的为您服务。
+            <div class="prompt">完善以下资料即可获得80经验值，{{=it.site_name}}不会以任何形式公开您的个人隐私，请放心填写！</div>
+        </div>
+        <div class="form-m">
+            
+            <div class="item ui-clr">
+                <dl>
+                    <dt class="color03">昵 称：</dt>
+                    <dd>
+                        <input type="text" class="input-m" name="nickname" value="{{=it.member.nickname}}" data-haved="true"/>
+                    </dd>
+                </dl>
+            </div>
+            <div class="item ui-clr">
+                <dl>
+                    <dt class="color03">出生日期：</dt>
+                    <dd><input type="text" class="input-m" name="birthday" value="{{=it.member.birthday}}" /></dd>
+                </dl>
+            </div>
+            <div class="item ui-clr">
+                <dl>
+                    <dt class="color03">性　别：</dt>
+                    <dd>
+                        <label><input name="sex" type="radio" value="1"  data-haved="true" {{? it.member.sex==1}}checked{{?}}/> 男</label>
+                        <label><input name="sex" type="radio" value="2"  data-haved="true" {{? it.member.sex==2}}checked{{?}}/> 女</label>
+                    </dd>
+                </dl>
+            </div>
+            <div class="item ui-clr">
+                <dl>
+                    <dt class="color03">电子邮箱：</dt>
+                    <dd><input type="text" class="input-m" name="email" value="{{=it.member.email}}"  /></dd>
+                </dl>
+            </div>
+            <div class="item ui-clr">
+                <dl>
+                    <dt class="color03">手 机：</dt>
+                    <dd style="padding-top:2px;">{{=it.member.mobile}}</dd>
+                </dl>
+            </div>
+            <div class="item ui-clr">
+                <dl>
+                    <dt class="color03">所在地区：</dt>
+                    <input type="hidden" name="zone" value="" id="zone"  data-haved="true">
+                    <dd id="select_linkage">{{=it.area}}</dd>
+                </dl>
+            </div>
+            <div class="item ui-clr">
+                <dl>
+                    <dt class="color03">留下一句：</dt>
+                    <dd>
+                        <input name="intro" type="text" class="input-m" value="{{? it.member.intro!=null}}{{=it.member.intro}}{{?}}" />
+                        <div class="tip-m" style="line-height: 1.8; font-size: 14px;">
+                            <a onclick="openWin('minfo',{id:{{=it.member.mid}}})" class="color02">去个人空间看看</a>
+                        </div>
+                    </dd>
+                </dl>
+            </div></script>
+            <input class="btn" name="Submit" type="button" id="submit" value="确认修改">           
+        </div>
+    </div>
+        
+</form>
+</div>
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/availdate.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+$(function(){        
+    ac.form({
+	    area: "#submit_form",
+	    btn: "#submit",
+	    singleError: function (e, msg) {
+	    	
+	        toast(msg);
+	    },
+	    endSuccess: function (data) {
+	        showprog();       
+	        if ($('#select_linkage select').eq(0).val() > 0)$('#zone').val($('#select_linkage select').eq(0).val());	
+            if ($('#select_linkage select').eq(1).val() > 0)$('#zone').val($('#select_linkage select').eq(1).val());
+            if ($('#select_linkage select').eq(2).val() > 0)$('#zone').val($('#select_linkage select').eq(2).val());
+            var nickname = $('input[name=nickname]').val();	 
+            var email = $('input[name=email]').val();
+            var birthday = $('input[name=birthday]').val(); 
+            var sex = $('input[name=sex]:checked').val();          
+	        var zone = $('#zone').val();
+	        var intro = $('input[name=intro]').val();
+	        var D = {nickname:nickname,email:email,zone:zone,birthday:birthday,sex:sex,intro:intro};
+	        ajaxRequest('member/info', 'POST', {values:D}, function (ret, err) {
+		        hideprog();		      
+		        toast(ret.msg);
+		   });
+	    }
+     });
+});
+apiready = function(){
+  showprog();
+  ajaxRequest('member/info', 'GET', {}, function (ret, err) {
+    data = ret.data;
+    temp(data,"member");
+    hideprog();
+  });
+}
+window.addEventListener('load', function() {
+  FastClick.attach(document.body);
+}, false);
+
+var linkage=function(){
+};linkage.prototype={
+    //菜单联动
+    chang_parent:function(id,hidetop,field){
+        id=id?id:0;
+        hidetop=hidetop?hidetop:0;
+        field=field?field:'';
+		
+        var D={id:id,hidetop:hidetop,field:field};
+
+        ajaxRequest('member/chang_parent', 'POST', {values:D}, function (ret, err) {
+	        $('#select_linkage').html(ret.data);
+	    });		        
+    }
+};linkage = new linkage;
+</script>
+</body>
+</html>

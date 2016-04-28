@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>购物车</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/user.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    
+</head>
+<body>
+<div id="header">
+   <div class="cart active">
+	    <div class="icon_box" tapmode="" onclick="api.closeWin()"><i class="iconfont icon-fanhui"></i></div>
+	    <div class="toptit">会员中心</div>
+	    <div class="icon_box " tapmode="" onclick="openWin('setting')"><i class="iconfont icon-shezhi"></i></div>
+   </div>
+</div>
+<div id="content" class="container main">
+    <div  id="info-content">
+    </div>
+    </div>
+    <script id="info-template" type="text/x-dot-template">
+    <div class="user-summary">
+        <div class="info flex_box">
+        <div class="pic photo"><img src="{{=it.info.photo}}" /></div>
+	    <div class="u-data flex_con">
+	        <div class="flex_box"><h2 class="name blue">{{=it.info.username}}</h2><a class="cbtn red_btn" id="signin">签到</a></div>
+	        <ul class="flex_box">
+	            <li>{{=it.info.rank_name}}</li>
+	            <li>经验值:{{=it.info.rank_points}}</li>
+	            <li>{{=it.unit_pay_points}}:{{=it.info.pay_points}}</li>
+	        </ul>
+	    </div>
+        </div>
+    </div>
+    <ul class="flex_box account_bar">
+        <li><span>余额</span><b class="red">{{=it.info.user_money}}</b></li>
+        <li><span>{{=it.unit_db_points}}</span><b class="red">{{=it.info.db_points}}</b></li>
+        <li>{{? it.app_checking != 1}}<a class="cbtn red_btn" id="recchage" onclick="openWin('member_recchage')">充值</a>{{?}}</li>
+    </ul>
+    </script>
+    <div class="u-nav" id="free">
+        <div class="n-user-bar">
+            <a class="n-bar" onclick="openWin('member_db')">参与记录<span class="bar-ext"><b class="ico-next"></b></span></a>
+            <a class="n-bar" onclick="openWin('member_luck')">中奖记录<span class="bar-ext"><b class="ico-next"></b></span></a>
+        </div>
+        <div class="n-user-bar">
+            <a class="n-bar" onclick="openWin('member_order')">订单管理<span class="bar-ext"><b class="ico-next"></b></span></a>
+            <!--<a class="n-bar" href="{'/minfo?id='|cat:$smarty.const.MID|url}#share">我的晒单<span class="bar-ext"><b class="ico-next"></b></span></a>-->
+            <a class="n-bar" onclick="openWin('member_task')">我的任务<i>做任务赚<font class="unit_pay_points">拍币</font></i><span class="bar-ext"><b class="ico-next"></b></span></a>
+            <a class="n-bar" onclick="openWin('member_myivt')">我的邀请<span class="bar-ext"><b class="ico-next"></b></span></a>
+            <a class="n-bar" onclick="openWin('member_account')">资金管理<span class="bar-ext"><b class="ico-next"></b></span></a>
+            <a class="n-bar" onclick="openWin('member_safe')">帐户安全<span class="bar-ext"><b class="ico-next"></b></span></a>
+            <a class="n-bar" onclick="openWin('member_address')">收货地址<span class="bar-ext"><b class="ico-next"></b></span></a>
+            <a class="n-bar" onclick="openWin('member_info')">个人信息<span class="bar-ext"><b class="ico-next"></b></span></a>            
+        </div>
+        <div style="height:55px;"></div>
+    </div>
+</div>
+<div class="mask"></div>
+<div class="dialog">
+  <div class="dialog-header">设置头像</div>
+  <div class="dialog-body">
+    <ul class="dialog-select"><li onclick="$('.mask,.dialog').hide();openWin('photo',{type:'album'});">相册</li><li onclick="$('.mask,.dialog').hide();openWin('photo',{type:'camera'})">拍照</li></ul>
+  </div>
+</div>
+<ul id="nav">
+    <li><a class="main" tapmode="active" onclick="backhome();opentoTab('main')"><i class="iconfont icon-shouye"></i><span>首页</span></a></li>
+    <li><a class="yunbuy" tapmode="active" onclick="backhome();opentoTab('yunbuy')"><i class="iconfont icon-yiyuangoujilu"></i><span>所有商品</span></a></li>
+    <li><a class="results" tapmode="active" onclick="backhome();opentoTab('results')"><i class="iconfont icon-jiang"></i><span>最新揭晓</span></a></li>
+    <li><a class="cart" tapmode="active" onclick="openWin('cart')"><i class="iconfont icon-gouwuche"></i><span>购物车</span><em></em></a></li>
+    <li><a class="user active" tapmode="active"><i class="iconfont icon-huiyuanzhongxin"></i><span>个人中心</span></a></li>
+</ul>
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+$(function(){
+  $('.photo').live('click',function(){
+    $('.mask,.dialog').show();
+  });
+  $('.mask').click(function(){
+	$('.mask,.dialog').hide();
+  });
+  $('#signin').live('click',function(){
+      showprog();
+      ajaxRequest('member/ajax_signin', 'GET', {}, function (ret, err) {
+        hideprog();
+	    api.alert({
+		    title: '系统消息',
+		    msg: ret.msg
+		});
+	  });
+  });
+});
+apiready = function(){
+  showprog();
+  ajaxRequest('member/index', 'GET', {}, function (ret, err) {
+    data = ret.data;
+    temp(data,"info");
+    $('.unit_yun').html(data.unit_yun);
+    $('.unit_pay_points').html(data.unit_pay_points);
+    hideprog();
+  });
+}
+</script>
+</body>
+</html>

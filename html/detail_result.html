@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>计算详情</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/yunbuy_detail.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    
+</head>
+<body>
+  <div id="header">
+	   <div class="active main-bor">
+		    <div class="icon_box" tapmode="" onclick="api.closeWin()"><i class="iconfont icon-fanhui"></i></div>
+		    <div class="toptit">计算详情</div>
+		    <div class="icon_box icon_two" tapmode="" onclick="openWin('cart')"><i class="iconfont icon-gouwuche"></i></div>
+		    <div class="icon_box" tapmode="" onclick="backhome()"><i class="iconfont icon-shouye"></i></div>
+	   </div>
+  </div>
+  <div id="content" class="container detail">
+    <section id="calResult" class="z-minheight">
+        <div class="infoResult">
+            <dl>截止揭晓时间【<span id="last_time">0</span>】最<em>后100条全站购买时间记录</em></dl>
+            <ul class="result2" id="result2-content">
+                
+            </ul>
+            <script id="result2-template" type="text/x-dot-template">
+		    {{ for(var i=0; i< it.site_join.length; i++) { }}
+		    {{? i<101}}
+            <li>
+                <span>{{=it.site_join[i].db_time_a}}<dd>{{=it.site_join[i].db_time_b}}</dd></span>
+                <span>{{=it.site_join[i].timenum}}</span>
+                <span>{{=it.site_join[i].username}}</span>
+                <p><b class="z-arrow"></b></p>
+            </li>
+            {{?}}
+			{{ } }}
+			</script>
+        </div>
+        <div class="infoCount">
+            <div class="infoCount2" id="result-content"></div>
+        </div>
+        <script id="result-template" type="text/x-dot-template">
+        <ul>
+            <li style="border:0;">取以上数值结果得：</li>
+            <li>
+                1、求和：<span>{{=it.info.time_total}}</span>
+                <em>(上面100条夺宝记录时间取值相加之和</em>
+            </li>
+            <li>
+                2、取余：<span>{{=it.info.time_total}}</span>
+                <p>
+                    <em>(100条时间记录之和){{? it.is_ssc}}+{{=it.info.kjjg_str}}({{=it.info.qihao}}期时时彩开奖结果){{?}}</em>
+                    %{{=it.info.need_num}}
+                    <em>(本商品总需参与人次)</em>={{for(var i=0;i<it.info.residue.length; i++){}}{{=it.info.residue[i]}}{{}}}<em>(余数)</em>
+                </p>    
+            </li>
+            <li>
+                3、计算结果：{{for(var i=0;i<it.info.residue.length; i++){}}{{=it.info.residue[i]}}{{}}}<em>(余数)</em>+10000001=
+                <span>{{=it.info.luck_code}}</span>
+            </li>
+        </ul>
+        </script>
+        <div class="infoResult">
+            <ul class="result1 result3" id="result1-content"></ul>
+            <script id="result1-template" type="text/x-dot-template">
+		    {{ for(var i=0; i< it.site_join.length; i++) { }}
+		    {{? i>100}}
+            <li>
+                <span>{{=it.site_join[i].db_time_a}}<dd>{{=it.site_join[i].db_time_b}}</dd></span>
+                <span>{{=it.site_join[i].timenum}}</span>
+                <span>{{=it.site_join[i].username}}</span>
+            </li>
+            {{?}}
+			{{ } }}
+			</script>
+        </div>
+    </section>
+</div>
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+apiready = function(){
+   var id = api.pageParam.id;
+   showprog();
+   ajaxRequest('yunbuy/ajax_result/'+id, 'GET', {}, function (ret, err) {
+        if (ret) {
+           var data = ret.data;
+           $("#last_time").html(data.info.last_dbtime_str);
+		   temp(data,'result1');
+		   temp(data,'result2');
+		   temp(data,'result');
+        } else {
+            toast(err.msg);
+        }
+        hideprog();
+    });
+}
+$(function(){
+  $(".record-list li").live('click',function(){
+    $('.code').hide();
+    $(this).children('.text').children('.code').show();
+  });
+});
+</script>
+</body>
+</html>

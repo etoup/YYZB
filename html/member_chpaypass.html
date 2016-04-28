@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>购物车</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/user.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/member.css"/>
+</head>
+<body>
+<div id="header">
+   <div class="cart active">
+	    <div class="icon_box" tapmode="" onclick="api.closeWin()"><i class="iconfont icon-fanhui"></i></div>
+	    <div class="toptit">修改支付密码</div>
+	    <div class="icon_box" tapmode="" onclick="closetoWin()"><i class="iconfont icon-shouye"></i></div>
+   </div>
+</div>
+<div id="content" class="container main">
+	<div  id="member-content"></div>
+    <script id="member-template" type="text/x-dot-template">
+    <div class="form-m">
+        <form  id="submit_form">
+            <div class="item ui-clr">
+                <dl>
+                    <dt class="color03">新资金密码：</dt>
+                    <dd>
+                        <input type="password" class="input-m" name="pass1" value="" data-rule="*" data-nullmsg="请输入新资金密码" />
+                    </dd>
+                </dl>
+            </div>
+            <div class="item ui-clr">
+                <dl>
+                    <dt class="color03">确认密码：</dt>
+                    <dd>
+                        <input type="password" class="input-m" name="pass2" value="" data-sync="pass1"  data-errmsg="两次输入的密码不一致" data-rule="*" data-nullmsg="请输入确认密码" />
+                    </dd>
+                </dl>
+            </div>
+            {{? it.sms_open==1 && it.sms_verifymobile==true}}            
+            <div class="item ui-clr">
+                <dl>
+                    <dt class="color03">短信验证码：</dt>
+                    <dd>
+                        <input type="text" name="sms_code" class="input-m" value="" style="width:80px;" />
+                        <input type="button" value="获取短信验证码" onclick="getSmsVerify('sms_chpaypass')" id="btnSms" />
+                    </dd>
+                </dl>
+            </div>
+            {{?}}
+            <input type="hidden" id="mobile" value="" />
+            <input name="Submit" type="hidden" value="1" data-haved="true" />
+            </script>
+            <input type="button" id="submit" value="确定修改" class="btn" />
+        </form>
+    </div>
+</div>
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/availdate.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+$(function(){        
+    ac.form({
+	    area: "#submit_form",
+	    btn: "#submit",
+	    singleError: function (e, msg) {	    	
+	        toast(msg);
+	    },
+	    endSuccess: function (data) {
+	        showprog();       
+	        
+	        ajaxRequest('member/chpaypass', 'POST', {values:data}, function (ret, err) {
+		        hideprog();		      
+		        toast(ret.msg);
+		        if(ret.code==1){
+		        	openWin('member_safe');	
+		        }
+		   });
+	    }
+     });
+});
+apiready = function(){
+  showprog();
+  ajaxRequest('member/chpaypass', 'GET', {}, function (ret, err) {
+  	//alert(JSON.stringify(ret));
+    data = ret.data;
+    temp(data,"member");
+    hideprog();
+  });
+}
+</script>
+</body>
+</html>

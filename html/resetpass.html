@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>购物车</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/user.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/member.css"/>
+</head>
+<body>
+<div id="header">
+   <div class="cart active">
+	    <div class="icon_box" tapmode="" onclick="api.closeWin()"><i class="iconfont icon-fanhui"></i></div>
+	    <div class="toptit">重置密码</div>
+	    <div class="icon_box " tapmode="" onclick="closetoWin()"><i class="iconfont icon-shouye"></i></div>
+   </div>
+</div>
+<div id="content" class="container main">
+	<div class="tab-m-c" >
+        <div class="form-m">
+            <form id='submit_form'>
+                <div class="item ui-clr">
+                    <dl>
+                        <dt class="color03">新密码：</dt>
+                        <dd>
+                            <input type="password" class="input-m" name="pass1" value="" data-rule="*" data-nullmsg="请输入新密码" />
+                        </dd>
+                    </dl>
+                </div>
+                <div class="item ui-clr">
+                    <dl>
+                        <dt class="color03">确认密码：</dt>
+                        <dd>
+                            <input type="password" class="input-m" name="pass2" value="" data-sync="pass1" data-rule="*" data-nullmsg="请确认密码" data-errmsg="两次输入的密码不一致"/>
+                        </dd>
+                    </dl>
+                </div>
+                <input type="hidden" data-rule="" name="username" value=""/>
+                <input type="hidden" data-rule="" name="code" value=""/>
+                <input class="btn" name="Submit" type="button" id="submit" value="确认修改">
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/availdate.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+$(function(){        
+    ac.form({
+	    area: "#submit_form",
+	    btn: "#submit",
+	    singleError: function (e, msg) {
+	    	
+	        toast(msg);
+	    },
+	    endSuccess: function (data) {
+	        showprog();       
+	        
+	        ajaxRequest('member/resetpass', 'POST', {values:data}, function (ret, err) {
+		        hideprog();		      
+		        toast(ret.msg);
+		        if(ret.code==1){
+		        	openWin('login');
+		        }
+		   });
+	    }
+     });
+});
+apiready = function(){
+  if(uid) openWin('user');
+  if(api.pageParam.username==''||api.pageParam.code=='') openWin('forget');
+  $("input[name=username]").val(api.pageParam.username);
+  $("input[name=code]").val(api.pageParam.code);
+}
+
+</script>
+</body>
+</html>

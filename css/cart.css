@@ -1,0 +1,52 @@
+/* 购物车列表 */
+body{background-color:#F2F2F2;}
+.cart-list .item { position: relative; padding:15px; line-height: 1.8; overflow: hidden; border-bottom: 1px solid #e6e6e6; background-color: #fff; -webkit-transition: all .3s; transition: all .3s; /*font-size:1.4rem;*/ color: #666;}
+.cart-list .pic { position: absolute; left: 15px; top:15px; width:64px; border: 1px solid #ccc;}
+.cart-list .pic img { display: block; width:100%;}
+.cart-list .info { padding-left:75px;}
+.cart-list .info .title{ margin-bottom: 5px; }
+.cart-list .info .title a { color: #222;}
+.cart-list .info .bottom{ padding-top:5px; }
+.cart-list .item .del { position: absolute; right:16px; bottom: 18px;}
+.empty div{padding:50px 0 20px;}
+.number { position: relative; display: inline-block; padding:0 20px; vertical-align: middle; }
+.num-input,.qishu-input { padding:0 4px; width:30px; height:24px; line-height: 24px; text-align: center; font-family: Arial;/* font-size:14px;*/ border:1px solid #dcdcdc; outline: none; -webkit-appearance: none; border-radius: 0;}
+.num-btn { position: absolute; top: 0; width:24px; height: 24px; font-size:1.1em; line-height: 22px; text-align: center; overflow: hidden; background: #fff; color: #222; border:1px solid #dcdcdc; font-family: Arial;}
+.btn-plus,.btn-qishu-plus { right: 0;}
+.btn-minus,.btn-qishu-minus { left: 0;}
+.w-button-disabled, .w-button-disabled:hover{background: #ccc!important;color: #999!important;border-color: #b0b0b0!important;cursor: default;}
+.main{ padding-bottom:100px;}
+.foot-view { position:fixed; left: 0; right: 0; bottom: 0; border: solid #dcdcdc; border-width: 1px 0; padding:8px 10px; height: 32px; line-height: 32px; background: #fff; font-size:1.2rem;}
+.foot-view .btn { position: absolute; right:10px; top:8px;}
+
+
+
+/* 订单列表 */
+.pay-list { border-top:1px solid #e6e6e6; background-color: #fff;}
+.pay-list li { padding:12px; border-bottom:1px solid #e6e6e6; line-height: 16px; color: #222; font-size:1.2rem;}
+.pay-list li:last-child { border-bottom: 0;}
+.pay-list li .name {width:80%;}
+.pay-list li .num_box{text-align:right;width:20%;}
+.order-total { padding:8px 12px; background:#e6e6e6; text-align: right; margin-bottom: 10px; font-size:1.2rem;}
+.order-option .checkBar { position: relative; padding:15px 14px; color: #a4a4a4; margin-bottom: 8px; border-top:1px solid #e6e6e6; border-bottom: 1px solid #e6e6e6; background-color: #fff; font-size:1.2rem;}
+.order-option input { display: none;}
+
+.w-pay-selector .w-pay-type{ border: 2px solid #BCCCEE; white-space: nowrap; line-height: 30px; height: 30px; overflow: hidden; padding: 0 1rem; margin: 10px 10px 10px 0; display: inline-block; position: relative; cursor: pointer; color: #666; }
+.w-pay-selector .w-pay-selected{ border:2px solid #688EDF; color: #000; }
+
+.option-tip { line-height: 18px; padding:15px 14px; color: #898989; font-size:1.2rem; background-color: #fff;}
+.order-submit { position: absolute; bottom: 0; left: 0; right:0; padding:10px 14px; background-color: #fff;}
+.order-submit .ap-button { width:100%; height:34px; text-align: center;}
+#payment_bar{ background:#fff;}
+#payment li{ border-bottom:1px solid #e6e6e6; display:-webkit-box;display:-webkit-box;display:box; padding:10px;}
+#payment li .iconfont{font-size:46px;}
+#payment li .icon-zhifubaozhifu,#payment li .icon-ipaynow{color:#08a8ea;}
+#payment li .icon-wxpayapp{color:#36a43d;}
+#payment li .icon-aibei{font-size:40px; color:#08a8ea;}
+#payment li div.icon_box{width:50px;}
+#payment li div.text{width:80%; padding:10px 0; line-height: 1.5em;}
+#payment li div.text h2{font-size:14px;}
+#payment li div .icon-icon49{font-size:18px; color:#e6e6e6;}
+#payment li div.choose{line-height:50px;}
+#payment li div.hover .icon-icon49{color:#F60;}
+.foot-view{bottom:55px;}

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>夺宝详情</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/yunbuy_detail.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    
+</head>
+<body>
+  <div id="header">
+	   <div class="active main-bor">
+		    <div class="icon_box" tapmode="" onclick="api.closeWin()"><i class="iconfont icon-fanhui"></i></div>
+		    <div class="toptit">奖品详情</div>
+		    <div class="icon_box icon_two" tapmode="" onclick="openWin('cart')"><i class="iconfont icon-gouwuche"></i></div>
+		    <div class="icon_box" tapmode="" onclick="backhome()"><i class="iconfont icon-shouye"></i></div>
+	   </div>
+  </div>
+  <div class="flex_con detail" id="content">
+    <div class="slider" id="pics-content">
+        
+    </div>
+    <script id="pics-template" type="text/x-dot-template">
+    {{? it.info.pics}}
+    {{ for(var i=0; i< it.info.pics.length; i++) { }}
+	    {{? it.info.pics[i].imgurl_src!=''}}
+	    <div><img src="{{=it.info.pics[i].imgurl_src}}"/></div>
+	    {{?}}
+	    {{? i==0}}<img src="{{=it.info.pics[i].imgurl_src}}" id="buy_img_{{=it.info.buy_id}}" style="display:none;"/>{{?}}
+    {{}}}
+    {{? it.info.price > 1}}<span class="zq_ico1"><img src="../image/{{=Math.floor(it.info.price)}}.png"></span>{{?}}   
+    {{?}}
+    
+    </script>
+    
+    <div class="info" id="info-content">
+    </div>
+    <script id="info-template" type="text/x-dot-template">
+	    <p class="title"><em>{{? it.info.end_num>0}}进行中{{?? it.info.luck_code<=0}}待揭晓{{??}}已揭晓{{?}}</em> (第{{=it.info.qishu}}期) {{=it.info.title}}</p>
+	    <div class="price">
+	        <div class="ui-right">总需{{=it.info.need_num}}人次</div>
+            <div class="ui-left">价值：<b class="color01">{{=it.info.goods_price}}</b>元</div>
+        </div>
+        <div class="fn-clear"></div>
+        {{? it.info.end_num > 1}}
+        <div class="progressBar">
+            <p class="wrap-bar">
+                <span class="bar" style="width:{{=it.info.jindu}}%"></span>
+            </p>
+            <div class="ui-clr">
+                <div class="ui-left">{{=it.info.buy_num}}人已参与</div>
+                <div class="ui-right">剩余{{=it.info.end_num}}人次</div>
+            </div>
+        </div>
+        <div class="fn-clear"></div>
+        {{?}}
+    </script>
+    <div id="detail-content"></div>
+    <ul class="yunbuy_other">
+        <a onclick="openWin('detail_join',{id:api.pageParam.id})"><b></b>所有参与记录</a>
+        <a onclick="openWin('detail_info',{id:api.pageParam.id})"><b></b>图文详情<label>（建议WIFI下查看）</label></a>
+        <div id="win-content"></div>
+        <script id="win-template" type="text/x-dot-template">
+        {{? it.info.qishu > 1}}
+        <a onclick="openWin('detail_win',{id:api.pageParam.id})"><b></b>往期揭晓</a>
+        {{?}}
+        </script>
+        <a onclick="openWin('detail_share',{id:api.pageParam.id})"><b></b>晒单分享</a>
+    </ul>
+    <div id="detail-content"></div>
+    <script id="detail-template" type="text/x-dot-template">
+    {{? it.info.end_num>0}}
+    <div class="detail-userCodes">
+        {{? it.member_join.length}}
+        <p>您本期总共参与了<b class="color01">{{=it.member_join_count}}</b>人次</p>
+        <p class="codes">
+                                   您的号码:
+            <span class="m-detail-code">
+            {{ for(var i=0; i< it.member_join.length; i++) { }}
+            {{? i < 9}}
+            {{? i < 8}}<b>{{=it.member_join[i]}}</b>{{??}}……{{?}}
+            {{?}}
+            {{ } }}
+            </span>
+            {{? it.member_join_count >8}}
+            <a class="m-detail-codes-btn blue" href="javascript:void(0)">展开所有&gt;&gt;</a>
+            <span class="m-detail-codes" style="display:none;">
+            {{ for(var i=0; i< it.member_join.length; i++) { }}
+                <b {{? it.member_join[i] == it.info.luck_code}}class="red"{{?}}>{{=it.member_join[i]}}</b>
+            {{}}}
+            </span>
+            <a class="m-detail-codes-btn-hide blue" style="display: none;" href="javascript:void(0)">收起号码&gt;&gt;</a>
+            {{?}}
+        </p>
+        {{??}}
+        <p class="detail-userCodes-blank">您还没有参与,赶紧参与吧！</p>
+        {{?}}
+    </div>
+    {{?? it.info.luck_code>0}}
+    <div style="clear:both;height:1px;width:100%;"></div>
+    <div class="detail-win">
+        <div class="win-mpic"><img src="../image/win-1.png"></div>
+        <div class="win-top">
+            <em onclick="openWin('minfo',{id:{{=it.luck_member.mid}}})"><img src="{{=it.luck_member.photo}}"></em>
+            <div class="win-left">
+                <p>获奖者：<span class="win-left-font">{{=it.luck_member.username}}({{=it.luck_member.ip_str}})</span></p>
+                <p style="display: none">用户ID：70037964（唯一不变标识）</p>
+                <p>期号：{{=it.info.qihao}}</p>
+                <p>本期参与：<span>{{=it.luck_member.qty}}</span>人次</p>
+                <p>揭晓时间：{{=it.info.wait_time}}</p>
+            </div>
+        </div>
+        <dl class="win-bottom">
+            <dt>幸运号码：<strong>{{=it.info.luck_code}}</strong></dt>
+            <dd onclick="openWin('detail_result',{id:{{=it.info.buy_id}}})">计算结果</dd>
+        </dl>
+    </div>
+    {{?? it.info.wait_lottery}}
+    <div style="clear:both;height:1px;width:100%;"></div>
+    <div id="divLotteryTime" class="pProcess clearfix">
+        <div class="pCountdown">
+            <div class="g-snav">
+                <div class="g-s"><div class="g-snav-lst">揭晓倒计时</div></div>
+                <div id="divLotteryTimer">
+                <div class="g-s"><div class="g-snav-lst"><b id="liMinute">00</b><em>:</em></div></div>
+                <div class="g-s"><div class="g-snav-lst"><b id="liSecond">00</b><em>:</em></div></div>
+                <div class="g-s"><div class="g-snav-lst"><b id="liMilliSecond">00</b></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{?}}
+    </script>
+    <div style="height:50px;"></div>
+    <div class="btn_bar">
+      <div class="btn_box flex_wrap" id="btn-content"></div>
+	  <div class="btn_bg"></div>
+	</div>
+	<script id="btn-template" type="text/x-dot-template">
+	  {{? it.info.luck_code > 0 || it.info.wait_lottery}}
+	    <div class="flex_wrap ing_str">第{{=it.new_buy.qishu}}期 火热进行中…</div><span class="btn-db"><a onclick="openWin('yunbuy_detail',{id:{{=it.new_buy.buy_id}}})" tapmode="" class="ac">立即前往</a></span>
+	  {{?? it.info.type == 1}}
+	    <span class="btn-db"><a class="ac" tapmode="" href="javascript:void(0)" onclick="addToCart('{{=it.info.buy_id}}','buy')">{{=it.unit_yun_button}}</a></span>
+	    <span class="btn-db btn-cart"><a class="ac" tapmode="" href="javascript:void(0)" onclick="addToCart('{{=it.info.buy_id}}','',this)">加入购物车</a></span>
+	  {{??}}
+	    <span class="btn-db btn-db-free"><a class="ac" tapmode="" href="javascript:void(0)" onclick="addToCart('{{=it.info.buy_id}}','free')">免费{{=it.unit_yun}}</a></span>
+	  {{?}}
+	</script>
+  </div>
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/slick.min.js"></script>    
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+$(function(){
+  $('.m-detail-codes-btn').live('click',function(){
+	    $(this).hide();
+	    $('.m-detail-code').hide();
+	    $('.m-detail-codes').show();
+	    $('.m-detail-codes-btn-hide').show();
+  });
+  $('.m-detail-codes-btn-hide').live('click',function(){
+	    $(this).hide();
+	    $('.m-detail-codes').hide();
+	    $('.m-detail-code').show();
+	    $('.m-detail-codes-btn').show();
+  });
+});
+var id = '';
+var lottery = 0;
+var is_ssc = 0;
+var qihao = 0;
+function show_date_time(endTime,obj) {
+    if(!this.endTime) { this.endTime=endTime;this.obj=obj; }
+    rTimeout = window.setTimeout("show_date_time()",30);
+    timeold = this.endTime-(new Date().getTime());
+
+    if(timeold <= 0) {
+        $("#liMinute").html('00');
+        $("#liSecond").html('00');
+        $("#liMilliSecond").html('00');
+        if(lottery==0){ //#
+            alert(id);
+            if(is_ssc==1){
+	            lottery = 1;
+	            ajaxRequest('welcome/lottery/'+qihao, 'GET', {}, function (ret, err) {
+				    openWin('yunbuy_detail',{id:id})
+				});
+            }else{
+	            rTimeout = window.clearTimeout(rTimeout);
+	            $('#divLotteryTimer').html("<span class='jx_ing'>开奖计算中...</span>");
+	            setTimeout(function(){
+	                lottery = 1;
+	                openWin('yunbuy_detail',{id:id})
+	            }, 5000);
+            }
+        }
+        return false;
+    }
+    sectimeold=timeold/1000
+    secondsold=Math.floor(sectimeold);
+    msPerDay=24*60*60*1000
+    e_daysold=timeold/msPerDay
+    daysold=Math.floor(e_daysold); 				//天
+    e_hrsold=(e_daysold-daysold)*24;
+    hrsold=Math.floor(e_hrsold); 				//时
+    e_minsold=(e_hrsold-hrsold)*60;
+    //分
+    minsold=Math.floor((e_hrsold-hrsold)*60);
+    minsold = (minsold<10?'0'+minsold:minsold);
+    //秒
+    e_seconds = (e_minsold-minsold)*60;
+    seconds=Math.floor((e_minsold-minsold)*60);
+    seconds = (seconds<10?'0'+seconds:seconds);
+    //毫秒
+    ms = parseInt((e_seconds-seconds)*100);
+
+    $("#liMinute").html(minsold);
+    $("#liSecond").html(seconds);
+    $("#liMilliSecond").html(ms);
+}
+apiready = function  () {  
+    id = api.pageParam.id;
+    showprog();
+    ajaxRequest('yunbuy/detail/'+id, 'GET', {}, function (ret, err) {
+        if (ret) {
+           var data = ret.data;
+           qihao = data.info.qihao;
+           temp(data,'pics');
+           $('#pics-content').slick({
+			    autoplay: true,
+			    arrows: false,
+			    dots: true
+		   });
+		   temp(data,'info');
+		   temp(data,'detail');
+		   temp(data,'win');
+		   temp(data,'btn');
+		   is_ssc = data.is_ssc;
+		   if(data.end_time>0){
+		     show_date_time((new Date().getTime())+(parseInt(data.end_time))*1000,null);
+		   }
+        } else {
+            toast(err.msg);
+        }
+        hideprog();
+    });
+}
+</script>
+</body>
+</html>

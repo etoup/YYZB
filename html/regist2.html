@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>购物车</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/login.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    
+</head>
+<body>
+<div id="header">
+   <div class="cart active">
+	    <div class="icon_box" tapmode="" onclick="api.closeWin()"><i class="iconfont icon-fanhui"></i></div>
+	    <div class="toptit">会员注册</div>
+	    <div class="icon_box" tapmode="" onclick="closetoWin()"><i class="iconfont icon-shouye"></i></div>
+   </div>
+</div>
+<div id="content" class="container main">
+    <div class="user-box">
+        <form id="regForm">
+            <div class="input" style="margin-bottom:5px;">
+                <i class="iconfont icon-phone"></i>
+                <div class="txt">
+                <input type="text" placeholder="请输入手机号" name="mobile" id="mobile" data-rule="m" data-nullmsg="请填写手机号" value="" />
+                </div>
+            </div>
+            <div style="padding: 0 0 10px 0;">保持通话，畅通无阻，<b class="color01" style="font-size: 12px;">发货验证</b>，准确送达！</div>
+            <div class="input code ui-left">
+                <i class="iconfont icon-yanzhengma"></i>
+                <div class="txt">
+                <input type="text" placeholder="请输入验证码" name="sms_code" id="sms_code" data-rule="n" data-nullmsg="请输入验证码" />
+                </div>
+            </div>
+            <input type="hidden" name="username" value="" data-rule=""/>
+            <input type="hidden" name="password" value="" data-rule=""/>
+            <input type="hidden" name="cart" value="" data-rule=""/>
+            <input type="button" class="red_btn cbtn ui-left" id="btnSms" onclick="getSmsVerify('sms_register')" value="获取短信" />
+            
+            <input class="btn" id="submit" type="button" value="提 交 注 册"/>
+            <div class="tc" style="padding-top:50px;">
+              <a tapmode="" onclick="openWin('login')">已有账号？立即登录</a>
+            </div>
+        </form>
+
+    </div>
+</div>
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/availdate.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+$(function(){
+  
+});
+apiready = function(){
+  $('input[name=mobile]').val(api.pageParam.username);
+  $('input[name=username]').val(api.pageParam.username);
+  $('input[name=password]').val(api.pageParam.password);
+  $('input[name=cart]').val($api.getStorage('cart'));
+  if(uid) openWin('user');
+  if(api.pageParam.username==''||api.pageParam.password=='') openWin('regist');
+  ac.form({
+	    area: "#regForm",
+	    btn: "#submit",
+	    singleError: function (e, msg) {
+	        toast(msg);
+	    },
+	    endSuccess: function (data) {
+	        showprog();
+	        ajaxRequest('member/submit', 'POST', {values:data}, function (ret, err) {
+		        hideprog();
+		        var data = ret.data;
+		        if (data) {
+		            act_login(data.user);
+		        }else{
+		            toast(ret.msg);
+		        }
+		        
+		   });
+	    }
+  });
+}
+window.addEventListener('load', function() {
+  FastClick.attach(document.body);
+}, false);
+</script>
+</body>
+</html>

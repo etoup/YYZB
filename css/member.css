@@ -1,0 +1,489 @@
+@charset "utf-8";/* 公用 */
+#header .active{border-bottom: 1px solid #d7d7d7; background: #fff; color: #666;height:50px;}
+.main {
+	padding-bottom: 0;
+}
+.title-m {
+	padding: 5px 10px;
+	line-height: 32px;	
+	color: #222;
+	background-color: #fff;
+	border-top: 1px solid #dcdcdc;
+	border-bottom: 1px solid #dcdcdc;
+	margin-top: 10px;
+}
+.title-m2 {
+	background: #f2f2f2;
+	border-top: 1px solid #e6e6e6;
+	border-bottom: 1px solid #fff;
+	padding: 10px 10px;
+	color: #000;
+}/* 表单相关 */
+select {
+	
+}
+textarea {
+	
+	line-height: 1.5;
+}
+input {
+	
+}
+
+.color01 {
+    color: #ff0033;
+	display: initial;
+}
+.btn {
+	display: block;
+	padding: 10px 20px;
+	border: 0;
+	border-radius: 3px;
+	background: #f01f46;	
+	color: #fff;
+	cursor: pointer;
+	-webkit-appearance: none;
+	width: 100%;
+}
+.btn-small {
+	display: inline-block;
+	padding: 5px 10px;
+	border: 0;
+	border-radius: 3px;
+	background: #f01f46;
+	cursor: pointer;
+	-webkit-appearance: none;
+	color: #fff
+}
+.btn-disable {
+	background: #ccc;
+}
+.input-m {
+	height: 30px;
+	line-height: 30px;
+	padding: 0 10px;
+	border: 1px solid #e6e6e6;
+	background: #fff;
+	color: #333;	
+}
+textarea.input-m {	
+	line-height: 1.5;
+}
+.form-m {
+	padding: 10px 10px;	
+	line-height: 32px;
+}
+.form-m .item {
+	padding-bottom: 10px;
+}
+.form-m .item dt {	
+	float: left;
+	width: 80px;
+	text-align: right;
+	white-space: nowrap;
+	overflow: hidden;
+}
+.form-m .item dd {	 
+	margin-left: 85px;
+	padding-right:20px;
+}
+.form-m select {
+	height: 30px;
+	line-height: 30px;
+	border: 1px solid #e6e6e6;
+	color: #333;	
+}
+.form-m .tip-m {	
+	color: #999;
+	line-height: 1.4;
+}
+.form-m .item dd .input-m {
+	width: 100%;
+	padding: 0;
+	text-indent: 12px;
+}/*链接选项卡*/
+.nav-m {	
+	text-align: center;
+	padding: 10px 0 0 10px;
+	background: #fff;
+}
+.nav-m li {
+	float: left;
+}
+.nav-m li a {
+	display: block;
+	background: #f2f2f2;
+	margin: 0 10px 10px 0;
+	border: 1px solid #e6e6e6;
+	overflow: hidden;
+	padding: 0 10px 0;
+	height: 32px;
+	line-height: 30px;
+}
+.nav-m li.on a {
+	background: #f01f46;
+	border-color: #f01f46;
+	color: #fff;
+}/*选项卡2*/
+
+
+.form-itv {
+    padding: 10px;
+}
+.form-itv p {
+    margin-bottom: 5px;
+}
+.tab-m-a {
+	padding: 10px 10px;
+	/*border-bottom: 3px solid #e6e6e6;*/
+	height: 40px;
+}
+.tab-m-a li {
+	width: 49%;
+	text-align: center;	
+	background: #fff;
+	color: #333;
+	height: 40px;
+	line-height: 40px;
+	overflow: hidden;
+	border: 1px solid #e6e6e6;
+	border-right: 0;
+	float: left;
+	cursor: pointer;
+}
+.tab-m-a li.last {
+	border-right: 1px solid #e6e6e6;
+}
+.tab-m-a li.on {
+	color: #fff;
+	background: #f01f46;
+}
+.tab-m-a li a {
+	color: #333;
+	display: block;
+	height: 100%;
+}
+.tab-m-a li.on a {
+	color: #fff;
+}/**选项卡3*/
+.tab-cell {
+	height: 40px;
+	line-height: 40px;
+	text-align: center;
+	background: #fff;	
+	overflow: hidden;
+}
+.tab-cell li {
+	width: 20%;
+	float: left;
+}
+.tab-cell li a {
+	display: block;
+	height: 100%;
+	border-right: 1px solid #e6e6e6;
+	color: #666;
+}
+.tab-cell li.last a {
+	border: 0;
+}
+.tab-cell li.on a {
+	color: #f02c50;
+}
+.tips-m {
+	background: #fff;
+	padding: 15px 10px;	
+	color: #666;
+	border-bottom: 1px solid #e6e6e6;
+}
+.tips-m a {
+	white-space: nowrap;
+}
+.prompt {	
+	background: #fffce2;
+	border: 1px solid #ffdd99;
+	color: #ff6600;
+	padding: 5px 10px;
+	margin-top: 5px;
+	height: inherit;
+	/* line-height: initial; */
+}
+.list_foot {
+	background: #F2F2F2;
+	border-top: 1px solid #e6e6e6;
+	padding: 10px 20px;	
+	color: #000;
+}/*list01*/
+.list01 {
+	border-top: 1px solid #e6e6e6; 	
+}
+.list01 dl {
+	border-bottom: 1px solid #e6e6e6;
+}
+.list01 dl dt {
+	background: #f2f2f2;
+	padding: 8px 10px;	
+	overflow: hidden;
+}
+.list01 dl dt a font {
+	color: #f01f46;
+}
+.list01 dl dt b {
+	color: #f01f46;	
+}
+.list01 dl dd {
+	background: #fff;
+}
+.list01 dl dd table {
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	border-collapse: collapse;
+}
+.list01 dl dd table th, .list01 dl dd table td {
+	border-top: 1px solid #e6e6e6;
+	padding: 7px 10px;
+	border-collapse: collapse;
+}
+.list01 dl dd table th {
+	border-right: 1px solid #e6e6e6;
+	width: 40%;
+	text-align: right
+}
+
+.list02 {
+	padding-top:45px; 	
+}
+.list02 dl {
+	border-bottom: 1px solid #e6e6e6;
+}
+.list02 dl dt {
+	background: #f2f2f2;
+	padding: 8px 10px;	
+	overflow: hidden;
+}
+.list02 dl dt a font {
+	color: #f01f46;
+}
+.list02 dl dt b {
+	color: #f01f46;	
+}
+.list02 dl dd {
+	background: #fff;
+}
+.list02 dl dd table {
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	border-collapse: collapse;
+}
+.list02 dl dd table th, .list02 dl dd table td {
+	border-top: 1px solid #e6e6e6;
+	padding: 7px 10px;
+	border-collapse: collapse;
+}
+.list02 dl dd table th {
+	border-right: 1px solid #e6e6e6;
+	width: 40%;
+	text-align: right
+}
+
+.list-address dl {
+	border-top: 2px solid #e6e6e6;
+	
+}
+.list-address dl dd table th {
+	width: 25%;
+}
+.list-db {
+	background: #fff;
+}
+.list-db dl {
+	margin: 15px 12px 0;
+	border: 0;
+	border-top: 1px solid #ff6600
+}
+.list-db dl dd table th {
+	width: 28%;
+}
+.list-db dl dd table th, .list-db dl dd table td {
+	border: 1px solid #e6e6e6;
+}
+.list-db dl dt {
+	position: relative;
+	padding-right: 15px;
+}
+.list-db dl dt .db-img {
+	position: absolute;
+	left: 10px;
+	top: 10px;
+	width: 90px;
+}
+.list-db dl dt .db-img img {
+	max-width: 100%
+}
+.list-db dl dt .db-txt {	
+	padding-left: 100px;
+}
+.list-db dl dt .db-txt .p1 {
+	margin-bottom: 5px;	
+}
+.list-db dl dt .db-nums li {
+	float: left;
+}
+.list-db dl dt .db-nums li.tr {
+	float: right;
+}
+.list-db .db-order {
+	border-bottom: 1px solid #e6e6e6;	
+}
+.db-jdt {
+	width: 100%;
+	background: #e6e6e6;
+	height: 12px;
+	overflow: hidden;
+	border-radius: 5px;
+	margin: 2px 0;
+}
+.db-jdt span {
+	display: block;
+	height: 100%;
+	float: left;
+	background: #ff9900;
+	border-radius: 5px;
+}
+.type-free {
+	background-color: #00A47C;
+	color: #FFF;
+	padding: 0 5px;
+	border-radius: 3px;
+}
+.list-luck {
+	padding: 15px 12px 0;
+	background: #fff;
+}
+.list-luck dl {
+	padding-bottom: 15px;
+	margin-top: 10px;
+}
+.list-luck dl dt {
+	background: #fff;
+	margin-bottom: 5px;
+}
+.list-luck dl dd {
+	padding-left: 130px;
+	position: relative;
+	min-height: 80px;
+}
+.list-luck dl dd .db-img {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 110px;
+}
+.list-luck dl dd .db-img img {
+	max-width: 100%;
+}/*充值页*/
+.re-money {
+	padding: 15px 15px 0;
+	background: #fff;
+	border-top: 1px solid #e6e6e6;
+}
+.re-money li {
+	float: left;
+	margin: 0 10px 10px 0;	
+}
+.re-money li label {
+	float: left;
+	display: block;
+	height: 40px;
+	line-height: 40px;
+	padding: 0 10px;
+	border: 1px solid #e6e6e6;
+	background: #f2f2f2;
+}
+.re-money li.on label {
+	border: 1px solid #f01f46;
+	background: #f01f46;
+	color: #fff;
+}
+.re-money li input.radio {
+	display: none;
+}
+.re-payment {
+	padding: 10px 15px 0;
+	background: #fff;
+	padding-top: 100px;
+}
+.re-payment dt {
+	color: #000;
+	border-top: 1px solid #e6e6e6;
+	padding-top: 15px;
+}
+.pay-img-list li {
+	float: left;
+	padding: 10px 10px 10px 0;
+}
+.pay-img-list li img {
+	vertical-align: middle;
+}
+.payBtn {
+	background: #f01f46;
+	color: #fff;
+	border: 0;
+	border-radius: 5px;
+	padding: 0 10px;
+	cursor: pointer
+}/*做任务赚拍币*/
+.free-m {
+	padding: 0 10px 0;
+}
+.free-a {
+	display: block;
+	margin-bottom: 10px;
+}
+.free-c {
+	display: none;
+	margin-bottom: 10px;
+}
+.free-c ul {
+	padding: 5px 10px;
+	background: #fffce2;
+	border: 1px solid #ffdd99;
+}
+.free-c ul li {
+	line-height: 2rem;
+	padding: 2px 0 1px 0;
+}
+.free-c ul li b {
+	color: #ff0033;
+}
+.yzm-btn {
+	position: absolute;
+	right: 0;
+	top: 0;
+	height: 32px;
+	line-height: 32px;
+	border: none;
+	background: #f01f46;
+	padding: 0 6px;
+	color: #fff;
+}
+input[type="button"], input[type="submit"], input[type="reset"] {
+	-webkit-appearance: none;
+}
+.share_bar{font-size:14px;}
+.share_bar i.iconfont{font-size:32px; color:#12b7f5; margin:0 5px; }
+.share_bar i.icon-weixin{color:#3dce3d;}
+
+#payment_bar{ background:#fff;}
+#payment li{ border-bottom:1px solid #e6e6e6; display:-webkit-box;display:-webkit-box;display:box; padding:10px;}
+#payment li .iconfont{font-size:46px;}
+#payment li .icon-zhifubaozhifu{color:#08a8ea;}
+#payment li .icon-wxpayapp{color:#36a43d;}
+#payment li .icon-aibei{font-size:40px; color:#08a8ea;}
+#payment li div.icon_box{width:50px;}
+#payment li div.text{width:80%; padding:10px 0; line-height: 1.5em;}
+#payment li div.text h2{font-size:14px;}
+#payment li div .icon-icon49{font-size:18px; color:#e6e6e6;}
+#payment li div.choose{line-height:50px;}
+#payment li div.hover .icon-icon49{color:#F60;}

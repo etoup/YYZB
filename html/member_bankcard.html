@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>购物车</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/user.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/member.css"/>
+</head>
+<body>
+<div id="header">
+   <div class="cart active">
+	    <div class="icon_box" tapmode="" onclick="api.closeWin()"><i class="iconfont icon-fanhui"></i></div>
+	    <div class="toptit">绑定银行卡</div>
+	    <div class="icon_box" tapmode="" onclick="closetoWin()"><i class="iconfont icon-shouye"></i></div>
+   </div>
+</div>
+<div id="content" class="container main">
+    <div  id="bank-content"></div>
+    <script id="bank-template" type="text/x-dot-template">
+    <div class="tips-m">
+        {{? it.row && it.row.id}}编辑{{??}}新增{{?}}银行卡信息
+        {{? it.row && it.row.id }}
+        <a onclick="openWin('member_bankcard')" class="color02">[新增]</a>
+        {{?}}
+        <div class="prompt">银行卡主要用于申请提现，<span class="color01">请先进行身份证实名认证，否则无法使用取现功能。</span></div>
+    </div>
+
+    <div class="form-m">
+        <form id="submit_form">
+            <div class="item ui-clr">
+                <dl>
+                    <dt class="color03">银行卡持卡人：</dt>
+                    <dd>                    	
+                        {{=it.member.realname}}
+                    </dd>
+                </dl>
+            </div>
+            <div class="item ui-clr">
+                <dl>
+                    <dt class="color03">银行名称：</dt>
+                    <dd>
+                        <input name="bankname" value="{{?it.row && it.row.bankname}}{{=it.row.bankname}}{{?}}" type="text" class="input-m" data-rule="*" data-nullmsg="请输入银行名称">
+                    </dd>
+                </dl>
+            </div>
+            <div class="item ui-clr">
+                <dl>
+                    <dt class="color03">银行卡号：</dt>
+                    <dd>
+                        <input name="bankcard" value="{{?it.row && it.row.bankcard}}{{=it.row.bankcard}}{{?}}" type="text" class="input-m" data-rule="*" data-nullmsg="请输入银行卡号">
+                    </dd>
+                </dl>
+            </div>
+            <div class="item ui-clr">
+                <dl>
+                    <dt class="color03">银行开户地：</dt>
+                    <dd>
+                        <input name="bankaddress" value="{{?it.row && it.row.bankaddress}}{{=it.row.bankaddress}}{{?}}" type="text" class="input-m" data-rule="*" data-nullmsg="请输入银行开户地">
+                    </dd>
+                </dl>
+            </div>
+            <div class="item ui-clr">
+                <dl>
+                    <dt class="color03">设为默认：</dt>
+                    <dd>
+                        <input type="checkbox" name="is_default" value="1" {{?it.row && it.row.is_default==1}}checked{{?}} data-haved="true">
+                    </dd>
+                </dl>
+            </div>
+            {{? it.sms_open==1 && it.sms_bankcard==true}}   
+            <div class="item ui-clr">
+                <dl>
+                    <dt class="color03">短信验证码：</dt>
+                    <dd>
+                        <input type="text" name="sms_code" class="input-m" value="" style="width: 80px;"  data-rule="*" data-nullmsg="请输入短信验证码"/>
+                        <input type="button" value="获取短信验证码" onclick="getSmsVerify('sms_bankcard')" id="btnSms" />
+                    </dd>
+                </dl>
+            </div>
+            {{?}}
+            <input type="hidden" name="id" value="{{?it.row && it.row.id}}{{=it.row.id}}{{?}}" data-haved='true'/>
+            <input type="hidden" name="Submit" value=1 data-haved="true"></script>
+            <input type="button" value="保 存" id="submit" class="btn" />
+        </form>
+    </div>
+    <div class="list01 list-address">
+        <div  id="bankcard-content"></div>
+	    <script id="bankcard-template" type="text/x-dot-template">
+	    {{ for(var i=0; i< it.bankcard.length; i++) { }} 
+        <dl class="item">
+            <dt><b>{{=it.bankcard[i].bankname}}（{{=it.bankcard[i].bankcard}}）</b> </dt>
+            <dd>
+                <table cellpadding="0" cellspacing="0">
+                    <tr>
+                        <th>持卡人</th>
+                        <td>
+                            {{=it.bankcard[i].name}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th nowrap>开户行所在地</th>
+                        <td>
+                            {{=it.bankcard[i].bankaddress}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>操作</th>
+                        <td>                            
+                            <a onclick="openWin('member_bankcard',{id:{{=it.bankcard[i].id}}})" class="color02">编辑</a>&nbsp;&nbsp;
+                            <a onclick="delBank({{=it.bankcard[i].id}})" class="color02">删除</a>
+                            {{? it.bankcard[i].is_default==1}}&nbsp;&nbsp;<span class="color01">默认</span>{{?}}
+                        </td>
+                    </tr>
+                </table>
+            </dd>
+        </dl>
+        {{ } }}
+        </script>
+    </div>
+</div>
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/availdate.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+$(function(){        
+    ac.form({
+	    area: "#submit_form",
+	    btn: "#submit",
+	    singleError: function (e, msg) {	    	
+	        toast(msg);
+	    },
+	    endSuccess: function (data) {
+	        showprog();  	        
+	        ajaxRequest('member/bankcard', 'POST', {values:data}, function (ret, err) {
+		        hideprog();		       
+		        toast(ret.msg);
+		        if(ret.code==1){
+		        	loadBank('member/bankcard');
+		        }
+		   });
+	    }
+     });
+});
+apiready = function(){
+	var url = "member/bankcard";
+	if(api.pageParam.id>0){
+		url = 'member/bankcard/'+api.pageParam.id;
+	}
+    loadBank(url); 
+}
+function loadBank(url){
+	  showprog();
+	  ajaxRequest(url, 'GET', {}, function (ret, err) {
+	  	if(ret.code>0){
+	  		alert(ret.msg);	  		
+	  		openWin('member_verifyidcard');
+	  		//api.closeWin();
+	  	}else{
+	  		//alert(JSON.stringify(ret));
+		    data = ret.data;
+		    temp(data,"bank");
+		    temp(data,"bankcard");
+		    hideprog();
+	  	}    
+	  	
+	  });
+}
+
+function delBank(id){
+	if(confirm('您确定要删除该银行账户?')){
+		ajaxRequest('member/bankcard_del/'+id, 'GET', {}, function (ret, err) {
+	       toast(ret.msg);
+	       loadBank('member/bankcard');
+	    });
+	}
+}
+</script>
+</body>
+</html>

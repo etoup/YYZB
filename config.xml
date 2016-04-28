@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<widget id="A6916380667932" version="0.0.1">
+  <name>一元珍宝</name>  
+  <description/>  
+  <author email="etoupcom@126.com" href="http://www.apicloud.com">etoup.com</author>
+  <content src="index.html"/>  
+  <preference name="pageBounce" value="false"/>  
+  <preference name="appBackground" value="rgba(0,0,0,0.0)"/>  
+  <preference name="windowBackground" value="rgba(0,0,0,0.0)"/>  
+  <preference name="frameBackgroundColor" value="rgba(0,0,0,0.0)"/>  
+  <preference name="hScrollBarEnabled" value="true"/>  
+  <preference name="vScrollBarEnabled" value="true"/>  
+  <preference name="autoLaunch" value="true"/>  
+  <preference name="fullScreen" value="false"/>  
+  <preference name="autoUpdate" value="true"/>  
+  <preference name="smartUpdate" value="true"/>  
+  <preference name="debug" value="false"/>  
+  <preference name="statusBarAppearance" value="true"/>  
+  <permission name="readPhoneState"/>  
+  <permission name="camera"/>  
+  <permission name="record"/>  
+  <permission name="location"/>  
+  <permission name="fileSystem"/>  
+  <permission name="internet"/>  
+  <permission name="bootCompleted"/>  
+  <permission name="hardware"/>  
+  <access origin="*"/>  
+  <preference name="urlScheme" value="yyzb"/>  
+  <feature name="qq"> 
+    <param name="urlScheme" value="tencent1105262248"/>  
+    <param name="apiKey" value="1105262248"/> 
+  </feature>  
+  <feature name="wx"> 
+    <param name="urlScheme" value="wxee0398df22c97313"/>  
+    <param name="apiKey" value="wxee0398df22c97313"/>  
+    <param name="apiSecret" value="01326d3051552b6ff9dfe0e5d3510362"/> 
+  </feature>  
+  <feature name="ipaynow"> 
+    <param name="urlScheme" value="wxd0d84bbf23b4a0e4"/> 
+  </feature>  
+  <feature name="ajpush"> 
+    <param name="app_key" value="e7d2f627ebb8d1bea239e695"/>  
+    <param name="channel" value="1"/> 
+  </feature> 
+</widget>

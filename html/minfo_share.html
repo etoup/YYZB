@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>夺宝详情</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/member_db.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/minfo.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    
+</head>
+<body>
+  <div id="header">
+	   <div class="active">
+		    <div class="icon_box" tapmode="" onclick="api.closeWin()"><i class="iconfont icon-fanhui"></i></div>
+		    <div class="toptit">个人空间</div>
+		    <div class="icon_box" tapmode="" onclick="closetoWin()"><i class="iconfont icon-shouye"></i></div>
+	   </div>
+  </div>
+  <div id="content" class="container main space">
+        <div class="shead" id="info-content">
+        
+        </div>
+	    <script id="info-template" type="text/x-dot-template">
+	    <div class="mpic"><img src="{{=it.info.photo}}" width="60" height="60" /><i></i></div>
+        <dl class="sinfo">
+            <dt>{{=it.info.username}}</dt>
+            <dd>
+                {{?it.info.intro}}<p>{{=it.info.intro}}</p>{{?}}
+                <p><b>ID：{{=it.info.mid}} {{=it.info.ip}}</b></p>
+                <p><b>经验值：<span>{{=it.info.rank_points}}</span> <span>{{=it.info.member_rank}}</span></b></p>
+                <p>还差{{=it.info.level_upgrade}}经验值即可升级到{{=it.info.level_upgrade_name}}</p>
+            </dd>
+        </dl>
+	    </script>
+	    <div class="fn-clear"></div>
+	    <div class="container shareDetail" id="detail-content"></div>
+	    <script id="detail-template" type="text/x-dot-template">
+	    <p class="title">{{=it.share.title}}</p>
+	    <div class="info">
+	        <p>获奖商品：<a onclick="openWin('yunbuy_detail',{id:{{=it.info.buy_id}}})" class="blue">
+	            (第{{=it.info.qishu}}期){{=it.info.title}}</a>
+	        </p>
+	        <p>获得者：<a onclick="openWin('minfo',{id:{{=it.share.mid}}})" class="red">{{=it.member.username}}</a></p>
+	        <div class="total">总共参与：<span class="red">{{=it.db_info.qty}}</span>人次</div>
+	        <div class="code">幸运号码：<b class="red">{{=it.db_info.luck_code}}</b></div>
+	        <div class="time">揭晓时间：{{=it.info.end_time}}</div>
+	        {{? it.new_buy}}
+	        <div class="more"><a class="blue" onclick="openWin('yunbuy_detail',{id:{{=it.new_buy.buy_id}}})">第{{=it.new_buy.qishu}}期正在进行中…</a></div>
+	        {{?}}
+	    </div>
+	    <div class="all">
+	        <div class="txt">{{=it.share.content}}</div>
+	        <div class="pics">
+	            {{ for(var i=0; i< it.share.thumbs.length; i++) { }}
+	            <p><img src="{{=it.share.thumbs[i]}}"/></p>
+	            {{}}}
+	        </div>
+	    </div>
+	    </script>
+	    <!-- <a onclick="sharewx()">分享朋友圈</a> -->
+  </div>
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+var id = '';
+var vid = '';
+apiready = function(){
+   id = api.pageParam.id>0 ? api.pageParam.id : '';
+   vid = api.pageParam.vid>0 ? api.pageParam.vid : '';
+   ajaxRequest('minfo/index?id='+id, 'GET', {}, function (ret, err) {
+      temp(ret.data,'info');
+   });  
+   ajaxRequest('minfo/load_share/'+id+'?vid='+vid, 'GET', {}, function (ret, err) {
+      temp(ret.data,'detail');
+   });
+}
+function sharewx(){
+	var wx = api.require('wx');
+	wx.shareWebpage({
+	    apiKey: 'wx1a3813af198fd7fc',
+	    scene: 'timeline',
+	    title: '测试标题',
+	    description: '分享内容的描述',
+	    thumb: 'widget://a.jpg',
+	    contentUrl: 'http://apicloud.com'
+	}, function(ret, err){
+	    if(ret.status){
+	        alert('分享成功');
+	    }else{
+	        alert(err.code);
+	    }
+	});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>夺宝详情</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/member_db.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/minfo.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    
+</head>
+<body>
+  <div id="header">
+	   <div class="active">
+		    <div class="icon_box" tapmode="" onclick="api.closeWin()"><i class="iconfont icon-fanhui"></i></div>
+		    <div class="toptit">个人空间</div>
+		    <div class="icon_box " tapmode="" onclick="closetoWin()"><i class="iconfont icon-shouye"></i></div>
+	   </div>
+  </div>
+  <div id="content" class="container main space">
+        <div class="shead" id="info-content">
+        
+        </div>
+	    <script id="info-template" type="text/x-dot-template">
+	    <div class="mpic"><img src="{{=it.info.photo}}" width="60" height="60" /><i></i></div>
+        <dl class="sinfo">
+            <dt>{{=it.info.username}}</dt>
+            <dd>
+                {{?it.info.intro}}<p>{{=it.info.intro}}</p>{{?}}
+                <p><b>ID：{{=it.info.mid}} {{=it.info.ip}}</b></p>
+                <p><b>经验值：<span>{{=it.info.rank_points}}</span> <span>{{=it.info.member_rank}}</span></b></p>
+                <p>还差{{=it.info.level_upgrade}}经验值即可升级到{{=it.info.level_upgrade_name}}</p>
+            </dd>
+        </dl>
+	    </script>
+	    <div class="fn-clear"></div>
+	    <div class="m-user-duobaoRecord" id="detail-content"></div>
+	    <script id="detail-template" type="text/x-dot-template">
+	    <div class="detail">
+		        <div class="goods">
+		            <div class="pic" onclick="openWin('yunbuy_detail',{id:{{=it.db_info.buy_id}}})"><img src="{{=it.db_info.imgurl_thumb}}" width="64" height="48"></div>
+		            <div class="info info-simple">
+		                <div class="title" onclick="openWin('yunbuy_detail',{id:{{=it.db_info.buy_id}}})"><span class="txt-impt">(第{{=it.db_info.qishu}}期) </span>{{=it.db_info.title}}</div>
+		                <div class="opt" style="width: 60px; height: 20px;">{{? it.db_info.end_num}}<a onclick="openWin('yunbuy_detail',{id:{{=it.db_info.buy_id}}})" class="w-button w-button-s"><span>跟买</span></a>{{?}}</div>
+		            </div>
+		        </div>
+		        <div class="summary">
+		                                    本期奖品该用户总共参与了{{=it.db_info.qty}}人次，拥有{{=it.db_info.qty}}个号码
+		        </div>
+		        <div id="dvContainer">
+		            <table class="w-table">
+		                <thead>
+		                <tr>
+		                    <th class="col1"><font class="lang" lang="db">夺宝</font>时间</th>
+		                    <th class="col2">参与人次</th>
+		                    <th class="col3"><font class="lang" lang="db">夺宝</font>号码</th>
+		                </tr>
+		                </thead>
+		                <tbody>
+		                {{ for(var i=0; i< it.list.length; i++) { }}
+		                <tr>
+		                    <td class="col1" valign="top">{{=it.list[i].db_time}}</td>
+		                    <td class="col2" valign="top">{{=it.list[i].qty}}人次</td>
+		                    <td class="col3" valign="top">
+		                        <ul class="codeList">
+		                            {{ for(var j=0; j< it.list[i].yun_code.length; j++) { }}
+		                            <li class="item {{? it.list[i].luck_code == it.list[i].yun_code[j]}}fwb color02{{?}}">{{=it.list[i].yun_code[j]}}</li>
+		                            {{}}}
+		                        </ul>
+		                    </td>
+		                </tr>
+		                {{}}}
+		                </tbody>
+		            </table>
+		        </div>
+		        <div class="summary summary-bottom">
+		            <a onclick="openWin('minfo',{id:{{=it.db_info.member_id}}})"  class="blue">&lt;&lt;返回列表</a>
+		        </div>
+		</div>
+	    </script>
+  </div>
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+var id = '';
+var vid = '';
+apiready = function(){
+   id = api.pageParam.id>0 ? api.pageParam.id : '';
+   vid = api.pageParam.vid>0 ? api.pageParam.vid : '';
+   ajaxRequest('minfo/index?id='+id, 'GET', {}, function (ret, err) {
+      temp(ret.data,'info');
+   });  
+   ajaxRequest('minfo/load_db/'+id+'?vid='+vid, 'GET', {}, function (ret, err) {
+      temp(ret.data,'detail');
+   });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no" />
+		<title>购物车</title>
+		<link rel="stylesheet" type="text/css" href="../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/user.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/member.css"/>
+	</head>
+	<body>
+		<div id="header">
+			<div class="cart active">
+				<div class="icon_box" tapmode="" onclick="api.closeWin()">
+					<i class="iconfont icon-fanhui"></i>
+				</div>
+				<div class="toptit">
+					验证手机
+				</div>
+				<div class="icon_box " tapmode="" onclick="closetoWin()">
+					<i class="iconfont icon-shouye"></i>
+				</div>
+			</div>
+		</div>
+		<div id="content" class="container main">
+			<div class="tips-m">
+				<div class="prompt">
+					请先绑定您常用手机号,才能进行其他操作.(以便中奖后系统第一时间通知到您)
+				</div>
+			</div>
+			<div class="form-m">
+				<form id="submit_form">
+					<div class="item ui-clr">
+						<dl>
+							<dt class="color03">
+								手机号：
+							</dt>
+							<dd>
+								<div style="position: relative;border-right: 1px solid #e6e6e6; width:100%;">
+									<input type="text" class="input-m" name="mobile" id="mobile" value="" data-rule="*" data-nullmsg="请输入手机号" />
+								</div>
+							</dd>
+						</dl>
+					</div>
+					<div class="item ui-clr">
+						<dl>
+							<dt class="color03">
+								验证码：
+							</dt>
+							<dd>
+								<div style="   position: relative;width:100%;">
+									<input type="text" name="sms_code" id="sms_code-m" class="input-m" value="" data-rule="*" data-nullmsg="请输入验证码" >									
+									<input type="button" value="获取短信验证码" onclick="getSmsVerify('sms_verifymobile')" id="btnSms" class="yzm-btn" />									
+								</div>
+							</dd>
+						</dl>
+					</div>
+					<input type="hidden" name="Submit" value="1"  data-haved="true" >
+					<input type="button" value="确定" class="btn" id="submit" />
+				</form>
+			</div>
+		</div>
+		<script type="text/javascript" src="../script/jquery.min.js"></script>
+		<script type="text/javascript" src="../script/availdate.js"></script>
+		<script type="text/javascript" src="../script/fastclick.js"></script>
+		<script type="text/javascript" src="../script/api.js"></script>
+		<script type="text/javascript" src="../script/doT.min.js"></script>
+		<script type="text/javascript" src="../script/common.js"></script>
+		<script type="text/javascript">
+			$(function(){        
+			    ac.form({
+				    area: "#submit_form",
+				    btn: "#submit",
+				    singleError: function (e, msg) {
+				    	
+				        toast(msg);
+				    },
+				    endSuccess: function (data) {
+				        showprog();       
+				        
+				        ajaxRequest('member/verifymobile', 'POST', {values:data}, function (ret, err) {
+					        hideprog();		      
+					        toast(ret.msg);		
+					        if(ret.code==1){
+					        	openWin('member_safe');	
+					        }					        		        
+					   });
+				    }
+			     });
+			});
+					
+		</script>
+	</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>购物车</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/login.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    
+</head>
+<body>
+<div id="header">
+   <div class="cart active">
+	    <div class="icon_box" tapmode="" onclick="api.closeWin()"><i class="iconfont icon-fanhui"></i></div>
+	    <div class="toptit">会员登录</div>
+	    <div class="icon_box" tapmode="" onclick="closetoWin()"><i class="iconfont icon-shouye"></i></div>
+   </div>
+</div>
+<div id="content" class="container main">
+    <form id="loginform">
+      <div class="user-box">
+            <div class="input">
+                <i class="iconfont icon-dengluzhanghao01"></i>
+                <div class="txt">
+                  <input name="username" type="text" placeholder="账号/邮箱/手机" autocomplete="false" data-rule="*" data-nullmsg="请输入用户名/邮箱/手机" />
+                </div>
+            </div>
+            <div class="input">
+                <i class="iconfont icon-mima"></i>
+                <div class="txt">
+                  <input name="password" type="password" placeholder="密码" data-rule="*" data-nullmsg="请输入密码" />
+                </div>
+            </div>
+            <input type="hidden" name="cart" value="" data-rule=""/>
+            <input type="hidden" name="oauth" value="" data-rule=""/>
+            <input class="btn" id="submit" type="button" value="登&nbsp;&nbsp;录">
+            <div class="login_link ubox-b ui-clr tc">
+                <span tapmode="" onclick="openWin('forget')">忘记密码?</span>|<span tapmode="" onclick="openWin('regist')">注册账号</span>
+            </div>
+            <div class="tc oauth_login" id="oauth-content">
+              
+            </div>
+            <script id="oauth-template" type="text/x-dot-template">
+            {{? it.app_checking !=1}}
+            <h2>选择登录方式</h2>
+            {{? it.qqKey}}<i class="iconfont icon-qq" onclick="qqlogin()"></i>{{?}}
+            {{? it.wxKey}}<i class="iconfont icon-wechat-outline" onclick="wxlogin()"></i>{{?}}
+            {{?}}
+            </script>
+	    </div>
+    </form>
+</div>
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/availdate.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+function wxlogin(){
+    var wx = api.require('wx');
+    var openId;
+    var unionId;
+    showprog();
+	wx.auth({apiKey:wxKey}, function(ret, err){
+	    
+	    if(ret.status){
+	        wx.getToken({
+	        apiKey:wxKey,
+	        apiSecret:wxSecret,
+            code:ret.code
+	        },function(ret, err){
+	            if(ret.status){
+	                var accessToken = ret.accessToken;
+	                openId = ret.openId;
+	                unionId = ret.unionId;
+	                var cart = $api.getStorage('cart');
+	                ajaxRequest('member/oauth', 'POST',{values:{openid:openId,unionid:unionId,type:'wx',cart:cart}}, function (ret, err) {
+				        if (ret.data.mid>0) {
+				            act_login(ret.data);
+				            openWin('user');
+				        }else{
+	                        //获取用户信息
+				            wx.getUserInfo({
+			                    accessToken: accessToken,
+			                    openId: openId
+			                }, function(ret,err){
+			                    hideprog();
+			                    if(ret.status){
+			                        $api.setStorage('oauth',ret);
+			                        openWin('verify_mobile',{type:'wx'});
+			                    }else{
+			                        var msg = '';
+							        switch(err.code){
+							          case -1:
+							          msg = '未知错误';
+							          break;
+							          case 1:
+							          msg = 'accessToken过期';
+							          break;
+							          case 2:
+							          msg = 'openId非法';
+							          break;
+							          case 3:
+							          msg = 'openId为空';
+							          case 4:
+							          msg = 'accessToken为空';
+							          case 5:
+							          msg = 'accessToken非法';
+							          case 6:
+							          msg = '网络超时';
+							          break;
+							        }
+							        toast(msg);
+			                    }
+			                });
+				        }
+				   });
+	            }
+	        });
+	    }else{
+	        var msg = '';
+	        switch(err.code){
+	          case -1:
+	          msg = '未知错误';
+	          break;
+	          case 1:
+	          msg = '用户取消';
+	          break;
+	          case 2:
+	          msg = '用户拒绝授权';
+	          break;
+	          case 3:
+	          msg = '未安装微信客户端';
+	          break;
+	        }
+	        hideprog();
+	        toast(msg);
+	    }
+	    
+	});
+}
+function qqlogin(){
+    var qq = api.require('qq');
+    var unionId;
+    var openId;
+    showprog();
+    qq.login(function(ret,err){
+	    if(ret){
+	        //验证成功
+	        openId = ret.openId!='' ? ret.openId : openId;
+	        unionId = ret.unionId!='' ? ret.unionId : unionId;
+	        var accessToken = ret.accessToken;
+	        if(openId!=''){
+	              ajaxRequest('member/oauth', 'POST',{values:{openid:openId,unionid:unionId,type:'qq',cart:cart}}, function (ret, err) {
+				        if (ret.data.mid){
+				            act_login(ret.data);
+				            openWin('user');
+				        }else if(ret.data.openid!=''){
+				            //获取用户基本信息
+				            qq.getUserInfo(function(ret,err) {
+				                hideprog();
+				                if (ret.status) {
+				                    ret.info.openid = openId;
+				                    ret.info.unionid = unionId;
+				                    $api.setStorage('oauth',ret.info);
+			                        openWin('verify_mobile',{type:'qq'});
+				                }else{
+			                        toast('获取用户信息失败');
+			                    }
+				            });
+				        }
+				  });
+	        }
+		   hideprog();
+	    }else{
+	       toast(err.msg);
+	       hideprog();
+	    }
+	});
+}
+$(function(){
+  ac.form({
+	    area: "#loginform",
+	    btn: "#submit",
+	    singleError: function (e, msg) {
+	        toast(msg);
+	    },
+	    endSuccess: function (data) {
+	        showprog();
+	        ajaxRequest('member/act_login', 'POST', {values:data}, function (ret, err) {
+		        hideprog();
+		        var data = ret.data;
+		        if (data){
+		            act_login(data.user);
+		        }else{
+		            toast(ret.msg);
+		        }
+		   });
+	    }
+  });
+});
+
+var qqKey;
+var wxKey;
+var wxSecret;
+var cart;
+apiready = function(){
+  $api.setStorage('uid','');
+  $api.setStorage('uname','');
+  $api.setStorage('minfo','');
+  cart = $api.getStorage('cart');
+  $('input[name=cart]').val(cart);
+  $('input[name=oauth]').val($api.getStorage('oauth'));
+  if(uid){
+    openWin('user');
+  }else{
+    api.closeWin({
+	    name: 'user'
+	});
+  }
+  showprog();
+  ajaxRequest('member/login', 'GET', {}, function (ret, err) {
+        hideprog();
+        var data = ret.data;
+        temp(data,'oauth');
+        qqKey = data.qqKey;
+        wxKey = data.wxKey;
+        wxSecret = data.wxSecret;
+  });
+  
+//if($api.getStorage('oauth')){
+//  $('.oauth_login').hide();
+//}
+}
+window.addEventListener('load', function() {
+  FastClick.attach(document.body);
+}, false);
+</script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>支付结果</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    
+</head>
+<body>
+<div id="header">
+   <div class="cart active">
+	    <div class="icon_box" tapmode="" onclick="api.closeWin()"><i class="iconfont icon-fanhui"></i></div>
+	    <div class="toptit">订单支付</div>
+	    <div class="icon_box" tapmode="" onclick="closetoWin()"><i class="iconfont icon-shouye"></i></div>
+   </div>
+</div>
+<div id="content" class="container main">
+    <div class="result_bar">
+      <h2 class="red">恭喜您，支付成功！</h2>
+	  <p class="p1">请等待系统为您揭晓！</p>
+	  <p class="p2">您现在可以
+        <a tapmode="" onclick="openWin('member_db')" class="blue">查看云购记录</a> 或
+        <a tapmode="" onclick="closetoWin();opentoTab('yunbuy')" class="blue">继续云购</a>
+	  </p>  
+    </div>
+</div>
+<style type="text/css">
+    .result_bar{padding:30px; font-size: 12px; width:230px; margin:0 auto; line-height: 2em;}
+    .result_bar h2{font-size: 16px;}
+    .result_bar .p1{font-weight: bold; font-size: 12px; }
+    .result_bar .p2{font-size: 12px; }
+</style>
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+apiready = function(){
+
+}
+window.addEventListener('load', function() {
+  FastClick.attach(document.body);
+}, false);
+</script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no" />
+		<title>购物车</title>
+		<link rel="stylesheet" type="text/css" href="../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/user.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/member.css"/>
+	</head>
+	<body>
+		<div id="list-content"></div>
+		<script id="list-template" type="text/x-dot-template">
+		<div class="title-m2">
+			<b>可提现余额：<span class="color01">{{=it.member.user_money}}</span></b>
+		</div>
+		<div class="form-m" style="background: #fff;border-top:1px solid #e6e6e6;">
+			<form id="submit_form">
+				<div class="item ui-clr">
+					<dl>
+						<dt class="color03"><span class="color01">*</span> 提现金额：</dt>
+						<dd>
+							<input name="amount" type="text" class="input-m" data-rule="*" data-nullmsg="请输入提现金额"  />
+						</dd>
+					</dl>
+				</div>
+				{{?it.feelist}}			 
+				<div class="item ui-clr">
+					<dl>
+						<dt class="color03">到帐时间：</dt>
+						<dd>
+							<select name="gotime" id="gotime" data-haved="true">
+								{{ for(var i=0; i< it.feelist.length; i++) { }}	
+								<option value="{{=it.feelist[i].key}}">{{=it.feelist[i].key}}</option>
+								{{ } }}
+							</select>
+							<span class="color01 fee">提现将收取							
+							{{ for(var i=0; i< it.feelist.length; i++) { }}							
+								<b class="fee{{=it.feelist[i].key}}" {{? i!=0}}style="display:none;"{{?}}>{{=it.feelist[i].val}}</b>
+							{{ } }}
+							手续费
+						</span>
+						</dd>
+					</dl>
+				</div>				
+				{{?}}
+				<div class="list01 list-address">
+					{{?it.list}}
+					{{ for(var i=0; i< it.list.length; i++) { }}
+					<dl class="ui-clr">
+						<dt><label><input name="id" type="radio" value="{{=it.list[i].id}}" {{? it.list[i].is_default == 1}}checked="checked"{{?}} data-haved="true" /> <b>{{=it.list[i].bankname}}</b> <span>（{{=it.list[i].bankcard}}）</span></label></dt>
+						<dd>
+							<table cellpadding="0" cellspacing="0">
+								<tr>
+									<td>
+										<span class="color03">姓名：</span>{{=it.list[i].name}}&nbsp;&nbsp;
+										<span class="color03">开户行地址：</span>{{=it.list[i].bankaddress}}
+									</td>
+								</tr>
+							</table>
+						</dd>
+					</dl>
+					{{ } }}
+					{{?}}
+				</div>				
+				<input name="Submit" type="hidden" value="1" data-haved="true"/></script>
+				<input type="button" value="提交申请" id="submit" class="btn" />
+			</form>
+		</div>
+		<div id="member-content"></div>
+		<script id="member-template" type="text/x-dot-template">
+			<div class="list_foot">
+			您当前的可用保证金为：<span class="color01">{{=it.member.user_money}}</span>
+			冻结保证金：<span class="color02">{{=it.member.frozen_money}}</span>
+			</div>
+		</script>
+		<script type="text/javascript" src="../script/jquery.min.js"></script>
+		<script type="text/javascript" src="../script/availdate.js"></script>
+		<script type="text/javascript" src="../script/fastclick.js"></script>
+		<script type="text/javascript" src="../script/api.js"></script>
+		<script type="text/javascript" src="../script/doT.min.js"></script>
+		<script type="text/javascript" src="../script/common.js"></script>
+		<script type="text/javascript">			
+			function loadData(){							
+				showprog();
+				ajaxRequest('member/withdraw', 'GET', {}, function(ret, err) {
+					if(ret.code==2){
+						alert(ret.msg);
+						openWin('member_verifyidcard');
+					}else if(ret.code==3){
+						alert(ret.msg);
+						openWin('member_bankcard');
+					}else{					
+						temp(ret.data, "list");//alert(JSON.stringify(ret.data));
+						temp(ret.data, "member");
+						hideprog();
+					}
+				});				
+			}
+			apiready = function() {
+				loadData();
+				$('#gotime').live('change',function(){
+					var v=$(this).val();					
+					$('.fee b').hide();
+					$('.fee b.fee'+v).css('display','');
+				})
+			}
+			$(function(){        
+			    ac.form({
+				    area: "#submit_form",
+				    btn: "#submit",
+				    singleError: function (e, msg) {
+				    	
+				        toast(msg);
+				    },
+				    endSuccess: function (data) {
+				        showprog();       
+				        
+				        ajaxRequest('member/withdraw', 'POST', {values:data}, function (ret, err) {
+					        hideprog();		      
+					        toast(ret.msg);
+					        if(ret.code==1){
+					        	openWin('member_account',{showTab:'member_accountlog'})
+					        	//loadData();
+					        }
+					   });
+				    }
+			     });
+			});
+		</script>
+	</body>
+</html>

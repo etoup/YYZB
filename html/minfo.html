@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>夺宝详情</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/member_db.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/minfo.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    
+</head>
+<body>
+  <div id="header">
+	   <div class="active">
+		    <div class="icon_box" tapmode="" onclick="api.closeWin()"><i class="iconfont icon-fanhui"></i></div>
+		    <div class="toptit">个人空间</div>
+		    <div class="icon_box" tapmode="" onclick="closetoWin()"><i class="iconfont icon-shouye"></i></div>
+	   </div>
+  </div>
+  <div id="content" class="container main space">
+        <div class="shead" id="info-content">
+        
+        </div>
+	    <script id="info-template" type="text/x-dot-template">
+	    <div class="mpic"><img src="{{=it.info.photo}}" width="60" height="60" /><i></i></div>
+        <dl class="sinfo">
+            <dt>{{=it.info.username}}</dt>
+            <dd>
+                {{?it.info.intro}}<p>{{=it.info.intro}}</p>{{?}}
+                <p><b>ID：{{=it.info.mid}} {{=it.info.ip}}</b></p>
+                <p><b>经验值：<span>{{=it.info.rank_points}}</span> <span>{{=it.info.member_rank}}</span></b></p>
+                <p>还差{{=it.info.level_upgrade}}经验值即可升级到{{=it.info.level_upgrade_name}}</p>
+            </dd>
+        </dl>
+	    </script>
+	    <div class="snav" >
+	        <ul class="ui-clr">
+	            <li class="li_db" onclick="onLoad('db')">夺宝记录</li>
+	            <li class="li_dbCod" onclick="onLoad('dbCod')">中奖记录</li>
+	            <li class="li_share" onclick="onLoad('share')">晒单</li>
+	        </ul>
+	    </div>
+	    <div class="fn-clear"></div>
+	    <div id="list-content"></div>
+	    <script id="db-template" type="text/x-dot-template">
+	    <div class="list01 list-db">
+	    {{? it}}
+		    {{ for(var i=0; i< it.length; i++) { }}
+		    <dl class="item">
+			    <dt class="ui-clr">
+				    <div class="db-img"><a onclick="openWin('yunbuy_detail',{id:{{=it[i].buy_id}}})"><img src="{{=it[i].imgurl_src}}" /></a></div>
+				    <div class="db-txt">
+				        <p class="p1">
+				        <a onclick="openWin('yunbuy_detail',{id:{{=it[i].buy_id}}})"><span class="red">(第{{=it[i].qishu}}期)</span> {{=it[i].goods_name}}</a>
+				        {{? it[i].type ==2}}<em class="type-free">拍币</em>{{?}}
+				        </p>
+				        {{? it[i].buy.luck_code == 0}}
+				        <p class="blue">总需：{{=it[i].need_num}}人次</p>
+				        <p class="db-jdt">
+				            <span style="width:{{=it[i].buy.jindu}}%"></span>
+				        </p>
+				        <ul class="db-nums ui-clr gray">
+				            <li class="tr">剩余<span>{{=it[i].buy.end_num}}</span></li>
+				            <li class="tl">已参与<span>{{=it[i].buy.buy_num}}</span></li>
+				        </ul>
+				        {{??}}
+				        <p class="color03">
+						        获得者：<a class="blue" onclick="openWin('minfo_db',{id:{{=it[i].buy.member_id}}})">{{=it[i].buy.member_name}}</a>（本期共参与{{=it[i].luck_qty}}人次）<br/>
+						        幸运号码：<b class="color01" style="font-size: 1.4rem">{{=it[i].buy.luck_code}}</b><br/>
+						        揭晓时间：{{=it[i].buy.end_time}}
+				        </p>
+				        {{?}}
+				    </div>
+				</dt>
+				<dd>
+				    <table cellpadding="0" cellspacing="0">
+				        <tr>
+				            <th>状态</th>
+				            <td>
+				                {{? it[i].status == 2}}
+				                <span class="color02">正进行.....</span>
+				                {{?? it[i].status == 3}}
+				                <span class="color01">已获得</span>
+				                {{?? it[i].status == 4}}
+				                <span class="color03">待揭晓</span>
+				                {{?? it[i].status == 5}}
+				                <span class="color01">已揭晓</span>
+				                {{?}}
+				            </td>
+				        </tr>
+				        <tr>
+				            <th>参与人次</th>
+				            <td>
+				                {{=it[i].qty}}人次 {{? it[i].multi > 1}}<span class="red">参与{{it[i].multi}}期</span>{{?}}
+				            </td>
+				        </tr>
+				        <tr>
+				            <th>号码</th>
+				            <td>
+				                {{ for(var j=0; j< it[i].yun_code.length; j++) { }}
+				                {{? j<5}}{{=it[i].yun_code[j]}}&nbsp;&nbsp;{{?}}
+				                {{}}}
+				                <a onclick="openWin('minfo_db',{id:{{=it[i].mid}},vid:{{=it[i].buy_id}}})" class="blue">查看更多&gt;&gt;</a>
+				            </td>
+				        </tr>
+				    </table>
+				</dd>
+		    </dl>
+		{{ } }}
+		{{??}}
+		<div class="prompt">该用户还没有中奖记录！</div>
+		{{?}}
+		</div>
+	    </script>
+	    <script id="dbCod-template" type="text/x-dot-template">
+	    {{? it}}
+		<div class="list01 list-luck">
+		    {{ for(var i=0; i< it.length; i++) { }}
+		    <dl class="item ui-clr">
+		        <dt class="ui-clr">
+		            {{? it[i].type==2}}<span class="type-free">拍币</span> {{?}}<a onclick="openWin('yunbuy_detail',{id:{{=it[i].buy_id}}})"><span class="red">(第{{=it[i].qishu}}期)</span> {{=it[i].goods_name}}</a>
+		        </dt>
+		        <dd>
+		            <div class="db-img"><a onclick="openWin('yunbuy_detail',{id:{{=it[i].buy_id}}})"><img src="{{=it[i].imgurl_src}}" /></a></div>
+		            <div class="db-txt gray">
+		                <p>总需：{{=it[i].need_num}} 人次</p>
+		                <p>幸运号码：<strong class="red">{{=it[i].luck_code}}</strong></p>
+		                <p>总共参与：{{=it[i].qty}}人次</p>
+		                <p>揭晓时间：{{=it[i].wait_time}}</p>
+		            </div>
+		        </dd>
+		    </dl>
+		    {{}}}
+		</div>
+		{{??}}
+		<div class="prompt">该用户还没有中奖记录！</div>
+		{{?}}
+	    </script>
+	    <script id="share-template" type="text/x-dot-template">
+	    {{? it}}
+		<div class="shareList" style="margin-top:0;">
+		    {{ for(var i=0; i< it.length; i++) { }}
+		    <div class="item">
+		        <p class="title"><a onclick="openWin('minfo_share',{id:{{=it[i].mid}},vid:{{=it[i].id}}})">{{=it[i].obj_name}}<span class="red">（第{{=it[i].qishu}}期）</span></a></p>
+				<div class="cont ui-clr">
+				    <div class="pic"><a onclick="openWin('minfo_share',{id:{{=it[i].mid}},vid:{{=it[i].id}}})"><img src="{{=it[i].thumb}}" width="100"/></a></div>
+				    <div class="txt">
+				        <p class="mb5"><b style="color:#000">{{=it[i].title}}</b></p>
+				        <a onclick="openWin('minfo_share',{id:{{=it[i].mid}},vid:{{=it[i].id}}})">{{=it[i].content}}</a>
+				    </div>
+				</div>
+				<div class="fn-clear"></div>
+				<div class="author">
+				    <a onclick="openWin('minfo',{id:{{=it[i].mid}}})" class="blue">{{=it[i].username}}</a>
+				    <time>{{=it[i].addtime}}</time>
+				</div>
+		    </div>
+		    {{}}}
+		</div>
+		{{??}}
+		<div class="prompt">该用户还没有中奖记录！</div>
+		{{?}}
+	    </script>
+  </div>
+<input type="hidden" id="type" value=""/>  
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+var id = '';
+var page = 1;
+var type = '';
+function onLoad(type){
+  page = 1;
+  $('#type').val(type);
+  $("#list-content").html("");
+  loadData(type,page);
+}
+function loadData(type,page){
+    $('.snav ul li').removeClass('hover');
+    $('.li_'+type).addClass('hover');
+    if(type=='db'){
+      var url = 'minfo/load_db/'+id+'/'+page;
+    }else if(type=='dbCod'){
+      var url = 'minfo/load_dbCod/'+id+'/'+page;
+    }else{
+      var url = 'minfo/load_share/'+id+'/'+page;
+    }
+    var reslut = false;
+    showprog();
+    ajaxRequest(url, 'GET', {}, function (ret, err) {
+        if(ret.data){
+            var content = $api.byId('list-content');
+            var tpl = $api.byId(type+'-template').text;
+            var tempFn = doT.template(tpl);
+            $api.append(content, tempFn(ret.data));
+            reslut = true;
+        }else{
+            toast('没有更多了');
+        }
+        hideprog();
+    });
+    return reslut;
+}
+apiready = function(){
+   id = api.pageParam.id>0 ? api.pageParam.id : '';
+   type = typeof(api.pageParam.type) != "undefined" ? api.pageParam.type : 'db';
+   $('#type').val(type);
+   ajaxRequest('minfo/index?id='+id, 'GET', {}, function (ret, err) {
+      temp(ret.data,'info');
+   });   
+   page = 1;
+   loadData(type,page);
+   api.addEventListener({name:'scrolltobottom'}, function(ret, err){
+       page++;
+       var type = $('#type').val();
+       loadData(type,page);
+   });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>购物车</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/user.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/member.css"/>
+</head>
+<body>
+<div id="header">
+   <div class="cart active">
+	    <div class="icon_box" tapmode="" onclick="api.closeWin()"><i class="iconfont icon-fanhui"></i></div>
+	    <div class="toptit">帐户安全</div>
+	    <div class="icon_box" tapmode="" onclick="closetoWin()"><i class="iconfont icon-shouye"></i></div>
+   </div>
+</div>
+<div  id="row-content">
+
+</div>
+<script id="row-template" type="text/x-dot-template">
+<div id="content" class="container main">
+    <div class="tips-m">
+        <div class="prompt">灰色代表已经绑定或设置</div>
+    </div>
+    <div class="list01 list-address">
+        <dl>
+            <dd>
+                <table cellpadding="0" cellspcing="0">
+                    <tr class="color03">
+                        <th>手机号</th>
+                        <td>
+                            <b class="color01">{{=it.member.mobile}}</b>(已绑定，您可享受{{=it.site_name}}丰富的手机服务)
+                        </td>
+                        <td width="45"><a onclick="openWin('member_verifymobile')"  class="btn-small">修改</a></td>
+                    </tr>
+                </table>
+            </dd>
+        </dl>
+        <dl>
+            <dd>
+                <table cellpadding="0" cellspcing="0">
+                    <tr class="color03">
+                        <th>登录密码</th>
+                        <td>修改密码保护您的账户安全</td>
+                        <td width="45"> <a onclick="openWin('member_pwd')" class="btn-small">修改</a></td>
+                    </tr>
+                </table>
+            </dd>
+        </dl>
+        <dl>
+            <dd>
+                <table cellpadding="0" cellspcing="0">
+                    <tr class="{if !$is_mobile}color03{/if}">
+                        <th>资金密码</th>
+                        <td>
+                            修改资金密码保护您账户的资金安全，在出价的时候需要输入的密码({{? it.is_mobile}}<span class="color01">未修改</span>{{??}}已修改{{?}}，默认为注册手机后六位)。 
+                        </td>
+                        <td width="45"><a onclick="openWin('member_chpaypass')"  class="btn-small">修改</a></td>
+                    </tr>
+                </table>
+            </dd>
+        </dl>
+        <dl>
+            <dd>
+                <table cellpadding="0" cellspcing="0">
+                    <tr class="{if $member.verify_email}color03{/if}">
+                        <th>电子邮箱</th>
+                        <td>
+                        {{=it.member.email}}{{?it.member.verify_email==1}}(已验证){{??}}(<span class="color01">未验证</span>){{?}}，邮箱验证后可通过邮箱找回密码。 
+                        </td>
+                        <td width="45">{{? it.member.verify_email==1}}<a  onclick="openWin('member_info')" class="btn-small" >修改</a>{{??}}<a onclick="send_email()" class="btn-small">验证</a>{{?}}</td>
+                    </tr>
+                </table>
+            </dd>
+        </dl>
+        <dl>
+            <dd>
+                <table cellpadding="0" cellspcing="0">
+                    <tr class="{if $member.idcard}color03{/if}">
+                        <th>身份证</th>
+                        <td>
+                            设置用于提升账号的安全性和信任级别({{? it.member.idcard}}已认证{{??}}<span class="color01">未认证</span>{{?}}，认证后不能修改)。 </a>
+                        </td>
+                        <td width="45"><a onclick="openWin('member_verifyidcard')" class="btn-small">{{? it.member.idcard}}查看{{??}}设置{{?}}</td>
+                    </tr>
+                </table>
+            </dd>
+        </dl>
+        <dl>
+            <dd>
+                <table cellpadding="0" cellspcing="0">
+                    <tr class="{if $is_banks}color03{/if}">
+                        <th>银行卡</th>
+                        <td>
+                            银行卡用于提现，银行卡的户名必须与认证的身份证名字相同({{? it.is_banks}}已绑定{{??}}<span class="color01">未绑定</span>{{?}})。
+                        </td>
+                        <td width="45"> <a onclick="openWin('member_bankcard')" class="btn-small">绑定</a></td>
+                    </tr>
+                </table>
+            </dd>
+        </dl>
+        <dl>
+            <dd>
+                <table cellpadding="0" cellspcing="0">
+                    <tr class="{if $is_address}color03{/if}">
+                        <th>收货地址</th>
+                        <td>
+                            管理请认真填写，已保证您的商品能够及时签收 
+                        </td>
+                        <td width="45"><a onclick="openWin('member_address')" class="btn-small">管理</a></td>
+                    </tr>
+                </table>
+            </dd>
+        </dl>
+    </div>
+</div>
+</script>
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+
+apiready = function(){  
+	var url = "member/safe";
+	showprog();
+    ajaxRequest(url, 'GET', {}, function (ret, err) {      
+      data = ret.data;
+      temp(data,"row");
+      hideprog();
+    });  
+}
+function send_email(){
+	ajaxRequest('member/verifyEmail', 'GET', {}, function (ret, err) {      
+      toast(ret.msg);      
+    });
+}
+window.addEventListener('load', function() {
+  FastClick.attach(document.body);
+}, false);
+
+</script>
+</body>
+</html>

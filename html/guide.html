@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>引导页</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+</head>
+<body>
+  <img onclick="backhome()" src="../image/guide.png" style="width: 100%;height: 100%;display: block;">
+</body>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		$api.setStorage('showGuide',1);
+	};
+</script>
+</html>

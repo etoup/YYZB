@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>夺宝详情</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/member_db.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    
+</head>
+<body>
+  <div id="header">
+	   <div class="active">
+		    <div class="icon_box" tapmode="" onclick="api.closeWin()"><i class="iconfont icon-fanhui"></i></div>
+		    <div class="toptit">参与记录</div>
+		    <div class="icon_box " tapmode="" onclick="closetoWin()"><i class="iconfont icon-shouye"></i></div>
+	   </div>
+  </div>
+  <div id="content" class="container detail">
+	    <ul class="tab-cell tab-cell-5 ui-clr">
+	        <li class="time"><a onclick="loadtime('')">全部</a></li>
+	        <li class="time1"><a onclick="loadtime(1)">今天</a></li>
+	        <li class="time2"><a onclick="loadtime(2)">本周</a></li>
+	        <li class="time3"><a onclick="loadtime(3)">本月</a></li>
+	        <li class="time4 last"><a onclick="loadtime(4)">最近三月</a></li>
+	    </ul>
+	    <div class="list01 list-db" id="list-content">
+	    
+	    </div>
+	    <script id="list-template" type="text/x-dot-template">
+	    {{ for(var i=0; i< it.length; i++) { }}
+	    <dl class="item">
+		    <dt class="ui-clr">
+			    <div class="db-img"><a onclick="openWin('yunbuy_detail',{id:{{=it[i].buy_id}}})"><img src="{{=it[i].imgurl_src}}" /></a></div>
+			    <div class="db-txt">
+			        <p class="p1">
+			        <a onclick="openWin('yunbuy_detail',{id:{{=it[i].buy_id}}})"><span class="red">(第{{=it[i].qishu}}期)</span> {{=it[i].goods_name}}</a>
+			        {{? it[i].unit}}<em class="type-free">{{=it[i].buy_id}}}</em>{{?}}
+			        </p>
+			        {{? it[i].buy.luck_code == 0}}
+			        <p class="blue">总需：{{=it[i].need_num}}人次</p>
+			        <p class="db-jdt">
+			            <span style="width:{{=it[i].buy.jindu}}%"></span>
+			        </p>
+			        <ul class="db-nums ui-clr color03">
+			            <li class="tr">剩余<span>{{=it[i].buy.end_num}}</span></li>
+			            <li class="tl">已参与<span>{{=it[i].buy.buy_num}}</span></li>
+			        </ul>
+			        {{??}}
+			        <p class="color03">
+					        获得者：<a class="blue" onclick="openWin('minfo',{id:{{=it[i].buy.member_id}}})">{{=it[i].buy.member_name}}</a>（本期共参与{{=it[i].luck_qty}}人次）<br/>
+					        幸运号码：<b class="color01" style="font-size: 1.4rem">{{=it[i].buy.luck_code}}</b><br/>
+					        揭晓时间：{{=it[i].buy.end_time}}
+			        </p>
+			        {{?}}
+			    </div>
+			</dt>
+			<dd>
+			    <table cellpadding="0" cellspacing="0">
+			        <tr>
+			            <th>状态</th>
+			            <td>
+			                {{? it[i].status == 2}}
+			                <span class="color02">正进行.....</span>
+			                {{?? it[i].status == 3}}
+			                <span class="color01">已获得</span>
+			                {{?? it[i].status == 4}}
+			                <span class="color03">待揭晓</span>
+			                {{?? it[i].status == 5}}
+			                <span class="color01">已揭晓</span>
+			                {{?}}
+			            </td>
+			        </tr>
+			        <tr>
+			            <th>参与人次</th>
+			            <td>
+			                {{=it[i].qty}}人次 {{? it[i].multi > 1}}<span class="red">参与{{it[i].multi}}期</span>{{?}}
+			            </td>
+			        </tr>
+			        <tr>
+			            <th>号码</th>
+			            <td>
+			                {{ for(var j=0; j< it[i].yun_code.length; j++) { }}
+			                {{? j<5}}{{=it[i].yun_code[j]}}&nbsp;&nbsp;{{?}}
+			                {{}}}
+			                <a onclick="openWin('minfo_db',{id:{{=it[i].mid}},vid:{{=it[i].buy_id}}})" class="blue">查看更多&gt;&gt;</a>
+			            </td>
+			        </tr>
+			    </table>
+			</dd>
+	    </dl>
+		{{ } }}
+	    </script>
+  </div>
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+var id = '';
+var page = 1;
+var time = '';
+function loadtime(type){
+    time = type;
+    page = 1;
+    $('.tab-cell li').removeClass('on');
+    $(".time"+time).addClass('on');
+    $("#list-content").html('');
+    loadData(page);
+}
+function loadData(page){
+    var url = 'member/db/'+page+'?time='+time;
+    var reslut = false;
+    showprog();
+    ajaxRequest(url, 'GET', {}, function (ret, err) {
+        if(ret.data){
+            var content = $api.byId('list-content');
+            var tpl = $api.byId('list-template').text;
+            var tempFn = doT.template(tpl);
+            $api.append(content, tempFn(ret.data));
+            reslut = true;
+        }else{
+            toast('没有更多了');
+        }
+        hideprog();
+   });
+   return reslut;
+}
+apiready = function(){
+   time = api.pageParam.time>0 ? api.pageParam.time : '';
+   $(".time"+time).addClass('on');
+   page=1;           
+   loadData(page);
+   api.addEventListener({name: 'scrolltobottom'}, function(ret, err){
+       page++;
+       loadData(page);
+   });
+}
+</script>
+</body>
+</html>

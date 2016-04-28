@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>夺宝详情</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/minfo.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+	<link rel="stylesheet" type="text/css" href="../css/member.css"/>    
+</head>
+<body>
+  <div id="header">
+	   <div class="active">
+		    <div class="icon_box" tapmode="" onclick="api.closeWin()"><i class="iconfont icon-fanhui"></i></div>
+		    <div class="toptit">我的邀请</div>
+		    <div class="icon_box" tapmode="" onclick="closetoWin()"><i class="iconfont icon-shouye"></i></div>
+	   </div>
+  </div>
+  <div id="content" class="container main space">
+        <div class="tab-m-a">
+			<ul class="ui-clr">
+				<li class="ta ivt1" onclick="onLoad('ivt1')">邀请好友</li>
+				<li class="ta last list" onclick="onLoad('list')">我的邀请</li>
+			</ul>
+		</div>
+		<div id="list-content"></div>
+		<script id="ivt1-template" type="text/x-dot-template">
+	    <div class="tab-m-c" >
+			<div class="form-itv">
+				<p class="color01">复制邀请链接：</p>
+				<p><textarea id="text" onfocus="this.style.borderColor='#FD9';this.select();" onblur="this.style.borderColor='#ccc'" class="input-m showcontent" style="width: 95%;height:70px;padding:10px;">{{=it.comment.text}} {{=it.comment.url}}</textarea></p>
+				<p class="share_bar">
+				分享到: <i class="iconfont icon-qzone" onclick="qqshare('QZone')"></i> <i class="iconfont icon-qq2" onclick="qqshare('QFriend')"></i> <i class="iconfont icon-weixin" onclick="wxshare()"></i>
+				</p>		
+				<div style="clear: both"></div>
+			</div>
+		</div>
+		</script>
+		<script id="list-template" type="text/x-dot-template">
+		<div class="tab-m-c" >
+			<div class="tips-m">
+				<div class="prompt">
+					1.邀请1个得{{=it.ivt1}}个{{=it.unit_db_points}}。<br/>
+					2.被邀请人需通过<span  class="color01">实名认证或充值</span>，您才能领取奖励。<br/>
+					3.若邀请的会员大量电话无法打通，推荐人将扣回已领{{=it.unit_db_points}}，其中挖到（中）的商品无效，同时会被封号。
+				</div>
+			</div>
+			<div class="list01 list-address">
+				{{?it.list}}
+				{{ for(var i=0;i< it.list.length;i++) { }}
+				<dl>
+					<dt><b>{{=it.list[i].num}}、{{=it.list[i].username}}</b></dt>
+					<dd>
+						<table cellpadding="0" cellspcing="0">
+						<tr>
+							<th>注册时间</th>
+							<td>
+								{{=it.list[i].c_time}}
+								{{? i==(it.list.length-1)}} 
+								<a id="ivt1" class="{{?it.award_ivt_1 == 0 || it.award_ivt_1 == 2}}btn-small btn-disable{{??}}btn-small{{?}}" href="javascript:;" onclick="{{? it.award_ivt_1 == 0}}toast('尚未达到领取条件'){{?? it.award_ivt_1 == 1}}award_ivt(1,0){{??}}toast('已领取'){{?}}">领取</a>
+								{{??}}
+								<a id="mid{{=it.list[i].mid}}" class="{{? it.list[i].is_award == 0}}btn-small{{??}}btn-small btn-disable{{?}}" href="javascript:;" onclick="{{?it.list[i].is_award == 0}}award_ivt(0,{{=it.list[i].mid}}){{??}}toast('已领取'){{?}}">领取</a>
+								{{?}}
+							</td>
+						</tr>
+						</table>
+					</dd>
+				</dl>
+				{{ } }}
+				{{?}}
+			</div>
+		</div>
+		</script>	    
+  </div>
+<input type="hidden" id="type" value=""/>  
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+var id = '';
+var page = 1;
+var type = '';
+var sharetext;
+var shareurl;
+var sharepic;
+var wxKey;
+function onLoad(type){
+  page = 1;  
+  $("#list-content").html("");
+  loadData(type,page);
+  $(".ta").removeClass("on");
+  $("."+type).addClass("on");
+}
+function loadData(type,page){  
+    var url = 'member/myivt/'+page;    
+    var reslut = false;
+    showprog();
+    ajaxRequest(url, 'GET', {}, function (ret, err) {
+	
+		var content = $api.byId('list-content');
+		var tpl = $api.byId(type+'-template').text;
+		var tempFn = doT.template(tpl);
+		$api.append(content, tempFn(ret.data));
+		if(type=='ivt1'){
+		   sharetext = ret.data.comment.text;
+		   shareurl = ret.data.comment.url;
+		   sharepic = ret.data.comment.pic;
+		   wxKey = ret.data.comment.wxKey;
+		}
+		reslut = true;        
+        hideprog();
+		
+    });
+    return reslut;
+}
+function qqshare(type){
+    showprog();
+    var qq = api.require('qq');
+	qq.shareNews({
+	    url:shareurl,
+	    title:sharetext,
+	    description:sharetext,
+	    imgUrl:sharepic,
+	    type:type
+	}, function(ret, err){
+	    hideprog();
+	    if(ret.status){
+	        toast('分享成功');
+	    }else{
+	        toast(err.msg);
+	    }
+	});
+}
+function wxshare(){
+   showprog();
+   var wx = api.require('wx');
+   wx.shareWebpage({
+	    apiKey: wxKey,
+	    scene: 'timeline',
+	    title: sharetext,
+	    description: sharetext,
+	    contentUrl: shareurl
+	}, function(ret, err){
+	    hideprog();
+	    if(ret.status){
+	        toast('分享成功');
+	    }else{
+	        var msg = '';
+	        switch(err.code)
+			{
+			case -1:
+			  msg = '未知错误';
+			  break;
+			case 0:
+			  msg = '成功';
+			  break;
+			case 1:
+			  msg = 'apiKey非法';
+			  break;
+			case 2:
+			  msg = '用户取消';
+			  break;
+			case 3:
+			  msg = '发送失败';
+			  break;
+			case 4:
+			  msg = '授权拒绝';
+			  break;
+			case 5:
+			  msg = '微信服务器返回的不支持错误';
+			  break;
+			case 6:
+			  msg = '当前设备未安装微信客户端';
+			  break;
+			default:
+			  msg = '注册SDK失败';
+			}
+	        toast(msg);
+	    }
+	});
+}
+apiready = function(){
+    onLoad('ivt1');
+}
+
+function award_ivt(num,mid){
+	var D = { num:num,mid:mid };	
+	ajaxRequest('member/award_ivt/'+num, 'POST', {values:D}, function (ret, err) {
+		toast(ret.msg);
+		if(ret.code==1){
+			onLoad('list');
+		}
+		
+	});
+   
+}
+</script>
+</body>
+</html>

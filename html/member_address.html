@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>购物车</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/user.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/member.css"/>
+</head>
+<body>
+<div id="header">
+   <div class="cart active">
+	    <div class="icon_box" tapmode="" onclick="api.closeWin()"><i class="iconfont icon-fanhui"></i></div>
+	    <div class="toptit">收货地址</div>
+	    <div class="icon_box " tapmode="" onclick="closetoWin()"><i class="iconfont icon-shouye"></i></div>
+   </div>
+</div>
+<div  id="row-content"></div>
+<script id="row-template" type="text/x-dot-template">
+<div id="content" class="container main">		
+	<div class="form-m"> 	
+	<form  id="submit_form">	
+        <div class="item ui-clr">
+            <dl>
+                <dt class="color03"><span class="color01">*</span> 配送区域：</dt>
+                <input type="hidden" name="zone" value="1" id="zone"  data-haved="true">
+                <dd id="select_linkage">{{=it.area}}</dd>
+            </dl>
+        </div>        
+        <div class="item ui-clr">
+            <dl>
+                <dt class="color03"><span class="color01">*</span> 详细地址：</dt>
+                <dd>
+                    <input name="address" value="{{?it.row.address}}{{=it.row.address}}{{?}}" type="text" class="input-m"  data-rule="*" data-nullmsg="请输入详细地址">
+                </dd>
+            </dl>
+        </div>
+        <div class="item ui-clr">
+            <dl>
+                <dt class="color03"><span class="color01">*</span> 收货人姓名：</dt>
+                <dd>
+                    <input name="name" value="{{?it.row.name}}{{=it.row.name}}{{?}}" type="text" class="input-m"  data-rule="*" data-nullmsg="请输入收货人姓名">
+                </dd>
+            </dl>
+        </div>
+        <div class="item ui-clr">
+            <dl>
+                <dt class="color03"><span class="color01">*</span> 手机/电话：</dt>
+                <dd>
+                    <input name="mobile" value="{{?it.row.mobile}}{{=it.row.mobile}}{{?}}" type="text" class="input-m" data-rule="*" data-nullmsg="请输入手机/电话">
+                </dd>
+            </dl>
+        </div>
+        <div class="item ui-clr">
+            <dl>
+                <dt class="color03">邮政编码：</dt>
+                <dd>
+                    <input  name="zip" value="{{?it.row.zip}}{{=it.row.zip}}{{?}}" ignore="ignore" type="text" class="input-m" data-rule="*" data-nullmsg="请输入邮政编码">
+                </dd>
+            </dl>
+        </div>
+        <div class="item ui-clr">
+            <dl>
+                <dt class="color03">设为默认：</dt>
+                <dd>
+                    <input type="checkbox" name="is_default" value="1"  data-haved="true"  {{? it.row.is_default==1}}checked{{?}} >
+                </dd>
+            </dl>
+        </div>
+        <input type="hidden" name="back" value="{{? it.row.back>0}}{{=it.row.back}}{{?}}" data-haved="true" />
+        <input type="hidden" name="id" value="{{=it.row.id}}" data-haved="true" ></script>
+        <input name="Submit" type="button" id="submit" value="保 存" class="btn" />          
+	</div>
+	</form>
+	<div  id="address-content"></div>
+	<script id="address-template" type="text/x-dot-template">
+	<div class="list01 list-address">
+        {{ for(var i=0; i< it.address.length; i++) { }} 
+        <dl class="item">
+            <dt><b>有效地址一</b></dt>
+            <dd>
+                <table cellpadding="0" cellspacing="0">
+                    <tr>
+                        <th>收货人</th>
+                        <td>
+                            {{=it.address[i].name}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>手机/电话</th>
+                        <td>
+                            {{=it.address[i].mobile}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>收货地址</th>
+                        <td>
+                        	{{=it.address[i].area}}{{=it.address[i].address}}                           
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>邮编</th>
+                        <td>
+                            {{=it.address[i].zip}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>操作</th>
+                        <td>
+                            <a onclick="openWin('member_address',{id:{{=it.address[i].id}}})" class="color02">编辑</a>&nbsp;&nbsp;
+                            <a onclick="delAddress({{=it.address[i].id}})" class="color02">删除</a>
+                        </td>
+                    </tr>
+                </table>
+            </dd>
+        </dl>
+        {{ } }}
+    </div>
+    </script>
+</div>
+
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/availdate.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+$(function(){        
+    ac.form({
+	    area: "#submit_form",
+	    btn: "#submit",
+	    singleError: function (e, msg) {	    	
+	        toast(msg);
+	    },
+	    endSuccess: function (data) {
+	        showprog();       
+	        if ($('#select_linkage select').eq(0).val() > 0)$('#zone').val($('#select_linkage select').eq(0).val());	
+            if ($('#select_linkage select').eq(1).val() > 0)$('#zone').val($('#select_linkage select').eq(1).val());
+            if ($('#select_linkage select').eq(2).val() > 0)$('#zone').val($('#select_linkage select').eq(2).val());
+            var id = $('input[name=id]').val();
+            var address = $('input[name=address]').val();	 
+            var name = $('input[name=name]').val();
+            var mobile = $('input[name=mobile]').val(); 
+            var zip = $('input[name=zip]').val();  
+            var is_default = $('input[name=is_default]:checked').val();        
+	        var zone = $('#zone').val();
+	        
+	        var D = {id:id,address:address,name:name,mobile:mobile,zip:zip,is_default:is_default,zone:zone,Submit:1};
+	        ajaxRequest('member/address', 'POST', {values:D}, function (ret, err) {
+		        hideprog();		      
+		        toast(ret.msg);
+		        loadaddr('member/address');
+		   });
+	    }
+     });
+});
+
+
+apiready = function(){  
+	var url = "member/address";
+	if(api.pageParam.id>0){
+		url = 'member/address/'+api.pageParam.id;
+	}	
+    loadaddr(url);  
+}
+
+
+function delAddress(id){
+	if(confirm('您是否确认删除收货地址?')){
+		ajaxRequest('member/address_del/'+id, 'GET', {}, function (ret, err) {
+	       toast(ret.msg);
+	       loadaddr('member/address');
+	    });
+	}
+}
+
+
+function loadaddr(url){
+	showprog();
+    ajaxRequest(url, 'GET', {}, function (ret, err) {
+      data = ret.data;
+      temp(data,"row");
+      temp(data,"address");
+      hideprog();
+    });
+}
+
+window.addEventListener('load', function() {
+  FastClick.attach(document.body);
+}, false);
+
+var linkage=function(){
+};linkage.prototype={
+    //菜单联动
+    chang_parent:function(id,hidetop,field){
+        id=id?id:0;
+        hidetop=hidetop?hidetop:0;
+        field=field?field:'';
+		
+        var D={id:id,hidetop:hidetop,field:field};
+
+        ajaxRequest('member/chang_parent', 'POST', {values:D}, function (ret, err) {
+	        $('#select_linkage').html(ret.data);
+	    });		        
+    }
+};linkage = new linkage;
+</script>
+</body>
+</html>

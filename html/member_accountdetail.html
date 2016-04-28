@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no" />
+		<title>购物车</title>
+		<link rel="stylesheet" type="text/css" href="../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/user.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/member.css"/>
+	</head>
+	<body>				
+			<div class="list01 list-address" id="list-content"></div>
+			<script id="list-template" type="text/x-dot-template">
+				<dl class="item">
+					{{ for(var i=0; i< it.list.length; i++) { }}
+					<dt><b>{{=it.list[i].logtime}}</b></dt>
+					<dd>
+					<table cellpadding="0" cellspacing="0">
+					<tr>
+					<th>类型</th>
+					<td>
+					{{=it.list[i].stage_title}}
+					</td>
+					</tr>
+					{{? it.list[i].user_money != 0}}
+					<tr>
+					<th>可用金额</th>
+					<td>
+					<b class="color01">{{=it.list[i].user_money}}</b>
+					</td>
+					</tr>
+					{{?}}
+					{{? it.list[i].frozen_money != 0}}
+					<tr>
+					<th>冻结金额</th>
+					<td>
+					<b class="color01">{{=it.list[i].frozen_money}}</b>
+					</td>
+					</tr>
+					{{?}}
+					{{? it.list[i].db_points != 0}}
+					<tr>
+					<th>夺宝币</th>
+					<td>
+					{{=it.list[i].db_points}}
+					</td>
+					</tr>
+					{{?}}
+					{{? it.list[i].rank_points != 0}}
+					<tr>
+					<th>经验值</th>
+					<td>
+					{{=it.list[i].rank_points}}
+					</td>
+					</tr>
+					{{?}}
+					<tr>
+					<th>备注</th>
+					<td>
+					{{=it.list[i].desc}}
+					</td>
+					</tr>
+					</table>
+					</dd>
+					{{ } }}				
+				</dl>
+			</script>
+			<div class="loading getMore"></div>
+			<div id="member-content"></div>
+			<script id="member-template" type="text/x-dot-template">
+			<div class="list_foot">
+				您当前的可用保证金为：<span class="color01">{{=it.member.user_money}}</span>
+				冻结保证金：<span class="color02">{{=it.member.frozen_money}}</span>
+			</div>
+			</script>		
+		<script type="text/javascript" src="../script/jquery.min.js"></script>
+		<script type="text/javascript" src="../script/availdate.js"></script>
+		<script type="text/javascript" src="../script/fastclick.js"></script>
+		<script type="text/javascript" src="../script/api.js"></script>
+		<script type="text/javascript" src="../script/doT.min.js"></script>
+		<script type="text/javascript" src="../script/common.js"></script>
+		<script type="text/javascript">
+			var page = 1;
+			function loadData(page) {
+				var url = 'member/accountdetail/' + page;
+				var reslut = false;
+				showprog();
+				ajaxRequest(url, 'GET', {}, function(ret, err) {					 
+					if (ret.data.list) {
+						var content = $api.byId('list-content');
+						var tpl = $api.byId('list-template').text;
+						var tempFn = doT.template(tpl);
+						$api.append(content, tempFn(ret.data));
+						reslut = true;
+					} else {
+						toast('没有更多了');
+					}
+					temp(ret.data,"member");
+					hideprog();
+				});
+				return reslut;
+			}
+
+			apiready = function() {
+				page = 1;
+				loadData(page);
+				api.addEventListener({
+					name : 'scrolltobottom'
+				}, function(ret, err) {
+					page++;
+					loadData(page);
+				});
+				api.setRefreshHeaderInfo({
+					visible : true,
+					bgColor : '#f2f2f2',
+					textColor : '#4d4d4d',
+					textDown : '下拉刷新...',
+					textUp : '松开刷新...',
+					showTime : true
+				}, function(ret, err) {
+					$api.byId('list-content').innerHTML = '';
+					loadData(1);
+					api.refreshHeaderLoadDone();
+				});
+			}
+		</script>
+	</body>
+</html>

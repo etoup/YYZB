@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>夺宝</title>
+    <link rel="stylesheet" type="text/css" href="./css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/iconfont.css"/>
+</head>
+<body>
+<div id="wrap" class="flex_wrap flex_vertical">
+    <div id="header">
+       <div class="main active header">
+            <div class="icon_box" tapmode="" onclick="openTab('user')"><i class="iconfont icon-huiyuanzhongxin"></i></div>
+            <div class="toptit"><img id="logo" height="30" style="margin-top:10px;" src=""/></div>
+            <div class="icon_box" tapmode="" onclick="openWin('./html/classify')"><i class="iconfont icon-sousuo"></i></div>
+       </div>
+       <div class="results header">
+		    <div class="icon_box" tapmode="" onclick="openTab('user')"><i class="iconfont icon-huiyuanzhongxin"></i></div>
+		    <div class="toptit">最新揭晓</div>
+		    <div class="icon_box" tapmode="" onclick="opentoTab('main')"><i class="iconfont icon-shouye"></i></div>
+	   </div>
+	   <div class="yunbuy header">
+		    <div class="icon_box" tapmode="" onclick="openTab('user')"><i class="iconfont icon-huiyuanzhongxin"></i></div>
+		    <div class="toptit">所有商品</div>
+		    <div class="icon_box" tapmode="" onclick="opentoTab('main')"><i class="iconfont icon-shouye"></i></div>
+	   </div>
+    </div>
+    <div id="main" class="flex_con">
+    </div>
+    <ul id="nav">
+        <li><a class="main active" tapmode="active" onclick="openTab('main')"><i class="iconfont icon-shouye"></i><span>首页</span></a></li>
+        <li><a class="yunbuy" tapmode="active" onclick="openTab('yunbuy')"><i class="iconfont icon-yiyuangoujilu"></i><span>所有商品</span></a></li>
+        <li><a class="results" tapmode="active" onclick="openTab('results')"><i class="iconfont icon-jiang"></i><span>最新揭晓</span></a></li>
+        <li><a class="cart" tapmode="active" onclick="openWin('./html/cart')"><i class="iconfont icon-gouwuche"></i><span>购物车</span><em></em></a></li>
+        <li><a class="user" tapmode="active" onclick="openTab('user')"><i class="iconfont icon-huiyuanzhongxin"></i><span>个人中心</span></a></li>
+    </ul>
+</div>
+</body>
+</html>
+<script type="text/javascript" src="./script/fastclick.js"></script>
+<script type="text/javascript" src="./script/api.js"></script>
+<script type="text/javascript" src="./script/jquery.min.js"></script>
+<script type="text/javascript" src="./script/index.js"></script>
+<script type="text/javascript" src="./script/common.js"></script>

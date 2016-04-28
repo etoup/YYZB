@@ -1,0 +1,102 @@
+/*slide*/
+.swipe {
+  overflow: hidden;
+  visibility: hidden;
+  position: relative;
+}
+.swipe-wrap {
+  overflow: hidden;
+  position: relative;
+}
+.swipe-wrap > div {
+  float:left;
+  width:100%;
+  position: relative;
+}
+
+.swipe-wrap > div{
+  height: 200px; overflow: hidden; position: relative;
+}
+.swipe-wrap img{
+  height: 200px; width: 100%;
+}
+#slide{
+  height: 200px; margin:0 auto; position: relative; 
+  -webkit-box-shadow: 0px 2px 2px #666;
+  box-shadow: 0px 2px 2px #666;
+}
+#slide div label {
+  white-space: nowrap; text-overflow:ellipsis; overflow: hidden;
+  background-image: -webkit-linear-gradient(top, rgba(59,59,59,.6), rgba(27,27,27,.6), rgba(50,50,50,.4), rgba(31,31,31,.4));
+  background-image: linear-gradient(top, rgba(59,59,59,.6), rgba(27,27,27,.6), rgba(50,50,50,.4), rgba(31,31,31,.4));
+  position: absolute; left: 0; bottom: 0;
+  width: 100%; height: 40px; line-height: 40px; padding-left: 20px;
+  display:block;
+  color:#fff;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+#pointer{
+  position: absolute; right: 10px; bottom: 12px; overflow: hidden;
+}
+#pointer li{
+  float: left; list-style: none;
+}
+#pointer li a{
+  display: inline-block; width: 6px; height: 6px; border-radius: 6px;
+  border:1px solid #55abce; margin-right: 4px;
+}
+#pointer li a.active{
+  background-color: #55abce; 
+}
+
+/**************banner**************/
+.banner{position:relative; z-index:1;clear:both; overflow:hidden;width:100%;}
+.banner img{ width:100%; vertical-align:top; height: 200px;}
+/* dots */
+.banner .slick-dots{bottom:3%;}
+.banner .slick-dots li { position: relative; display: inline-block; *display:inline; }
+.banner .slick-dots li button{ display:inline-block; outline: none; line-height: 0; font-size: 0; border: 0; color: transparent; padding: 0; cursor: pointer; outline: none;background:#fff;vertical-align:top;}
+.banner .slick-dots li.slick-active button {background: #e54048;}
+
+/**************分类**************/
+.fenlei{background: #fff; border-bottom: 1px solid #dfdfdf; text-align: center;font-size: 12px; clear: both; overflow: hidden;}
+.fenlei li{-webkit-box-flex:1;-webkit-flex: 1;flex: 1;overflow: hidden; padding: 10px 0;}
+.fenlei li i{margin: 0 auto; width:40px; height:40px; border-radius:5px; display: block; overflow: hidden;color:#fff; margin-bottom:5px; line-height: 40px;font-size: 26px;}
+/**************index**************/
+
+.new-index-top{ padding:5px 10px; clear: both; overflow: hidden; line-height: 2;font-size: 12px; border-bottom:1px solid #e54048;}
+.new-index-top a{ display: block; background: url(../image/new_inde.png) no-repeat right center; background-size: auto 60% !important; color: #e54048;}
+.new-index-1{ clear: both; overflow: hidden; height:162px;}
+.new-index-1 li{float:left; width:50%; overflow: hidden; font-size: 12px;}
+.new-index-1 li div.box{border: solid #e54048; border-width: 0 1px 1px 0; padding:10px; height:60px;}
+.new-index-1 li:nth-child(2n) div.box{border-right: 0;}
+.new-index-1 li.new-odd{border-right: 0;}
+.new-index-1 li em{float: right; width:60px;overflow: hidden;margin-left:5px; display:inline-block;}
+.new-index-1 li em a{ display:block;}
+.new-index-1 li em a img{max-width:100%;height:auto;}
+.new-index-2{ overflow: hidden; line-height: 1.8;}
+.new-index-2 a{ color: #676767; }
+.new-index-2 span.tit{height:3em; line-height:1.5em; font-size:12px; margin-bottom:5px; overflow: hidden; display:block; clear: both;}
+.new-index-2 p{ display: block; clear: both; overflow: hidden; height:1.8em;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;margin-bottom: 0;}
+.new-index-2 p a{ color: #0084FF;font-size: 1.2em;}
+.new-index-2 .lefttime{ color: #E54048;}
+.new-index-2 .lefttime span{/*background:#464239; */border-radius:2px; padding:0 2px; color:#e54048;}
+.new-inex1{ border-top:1px solid #dfdfdf; margin-top: 10px;background: #fff;}
+.new-index2{clear: both; overflow:hidden}
+.new-index2 .new-box{float:left;width: 50%; font-size: 12px; overflow: hidden;}
+.new-index2 .new-box .box{border: solid #dfdfdf; border-width:0 1px 1px 0px;  padding:0 10px 10px;}
+.new-index2 .new-box:nth-child(2n) .box{border-right: 0;}
+.new-index2 .new-box.new-nr{ border-left: 0;}
+.new-index2 .new-box em{ display: block; overflow: hidden;height: 138px; margin-bottom: 5px; text-align: center; margin: 0 auto; width: 138px;}
+.new-index2 .new-box em a{ display: table-cell; height: 138px; text-align:center;vertical-align: middle; width: 138px;}
+.new-index2 .new-box em img{max-width:138px;max-height: 138px;}
+.new-index2 .new-box h5{ overflow: hidden;font-size: 12px; line-height: 1.8; height: 1.8em; clear: both; margin: 5px 0;white-space: nowrap; text-overflow: ellipsis;font-weight: normal;}
+.new-index2-1{ clear: both; overflow: hidden; padding:0;font-size: 12px;}
+.new-index2-1 dd{float: left; width:75%; overflow: hidden;}
+.index-n-1{ clear: both;overflow: hidden; color: #ababab; margin-bottom:8px;}
+.index-n-1 span{ color: #e54048;}
+.index-n-2{height:8px;overflow: hidden;clear: both;background: #eee;border-radius: 5px;}
+.index-n-2 span{display: block;clear: both;overflow: hidden;height: 8px;background: #fdb41c;border-radius: 5px;position: relative;}
+.new-index2-1 dt{text-align: right;}
+.new-index2-1 dt i{ display: block; color: #e54048;font-size: 20px; line-height:1.8;}

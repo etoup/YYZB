@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>修改头像</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/user.css"/>
+</head>
+<body>
+<style>
+.foot-view{height:40px; line-height: 40px;}
+.foot-view div{padding:0 10px; height:40px;}
+</style>
+<div id="header">
+   <div class="cart active">
+	    <div class="icon_box" tapmode="" onclick="api.closeWin()"><i class="iconfont icon-fanhui"></i></div>
+	    <div class="toptit">头像上传</div>
+   </div>
+</div>
+<div id="content" class="container main">
+</div>
+<div class="foot-view">
+    <div class="ui-left" tapmode onclick="resetclip();">重置</div>
+    <div class="ui-right" tapmode onclick="finishclip();">完成</div>
+</div>
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script>
+    apiready = function () {
+        var type = api.pageParam.type!='' ? api.pageParam.type : 'album';
+        var modHeight = api.winHeight - $('#header').height() - 60;
+        api.getPicture({
+                    sourceType: type,
+                    encodingType: 'jpg',
+                    mediaValue: 'pic',
+                    destinationType: 'url',
+                    allowEdit: true,
+                    quality: 50,
+                    targetWidth: 600,
+                    targetHeight: 600,
+                    saveToPhotoAlbum: false
+        },function(ret,err){
+                if( ret ){
+                    if(ret.data!=''){
+	                    var FNImageClip = api.require('FNImageClip');
+	                    console.log("fs"+api.fsDir);
+	                    FNImageClip.open({
+	                        rect: {
+	                            x: 0,
+	                            y: $('#header').height(),
+	                            w: api.winWidth,
+	                            h: modHeight
+	                        },
+	                        srcPath: ret.data,
+	                        style: {
+	                            mask: '',    
+	                            clip: {
+	                                w:api.winWidth,
+	                                h:api.winWidth,
+	                                borderColor: '#0f0',
+	                                borderWidth: 1
+	                            }
+	                        },
+	                        mode:'image',
+	                        fixedOn: api.frameName
+	                    },
+	                    function(ret, err) {
+	                        if (ret) {
+	                            
+	                        } else {
+	                            //alert(JSON.stringify(err));
+	                        }
+	                    });
+                    }else{
+                      openWin('user');
+                    }
+                }
+        });
+    }
+    
+    function finishclip(){
+        api.showProgress({
+	        title: '处理中...',
+	        modal: true
+	    });
+        var FNImageClip = api.require('FNImageClip');
+		FNImageClip.save({
+		    destPath: 'fs://imageClip/photo.jpg'
+		},
+		function(ret, err){        
+		    if(ret) {
+		        var file = ret.destPath;
+                ajaxRequest('member/photo', 'POST', {files:{'photo':'fs://imageClip/photo.jpg'}}, function (ret, err) {
+				    api.hideProgress();
+				    openWin('user');
+				});
+		    } else{
+		        alert(JSON.stringify(err));
+		    }
+		});
+    }
+    
+    function resetclip(){
+        var FNImageClip = api.require('FNImageClip');
+		FNImageClip.reset();
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>夺宝详情</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/member_db.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/minfo.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    
+</head>
+<body>
+  <div id="header">
+	   <div class="active">
+		    <div class="icon_box" tapmode="" onclick="api.closeWin()"><i class="iconfont icon-fanhui"></i></div>
+		    <div class="toptit">晒单专区</div>
+		    <div class="icon_box " tapmode="" onclick="closetoWin()"><i class="iconfont icon-shouye"></i></div>
+	   </div>
+  </div>
+  <div id="content" class="container">
+	    <div class="shareList" id="list-content"></div>
+	    <script id="list-template" type="text/x-dot-template">
+    	{{ for(var i=0; i< it.length; i++) { }}
+    	<div class="item">
+	        <p class="title"><a onclick="openWin('minfo_share',{id:{{=it[i].mid}},vid:{{=it[i].id}}})">{{=it[i].obj_name}}<span class="color03">（第{{=it[i].qishu}}期）</span></a></p>
+			<div class="cont ui-clr">
+			    <div class="pic"><a onclick="openWin('minfo_share',{id:{{=it[i].mid}},vid:{{=it[i].id}}})"><img src="{{=it[i].thumb}}"/></a></div>
+			    <div class="txt">
+			        <p class="mb5"><b style="color:#000">{{=it[i].title}}</b></p>
+			        <a onclick="openWin('minfo_share',{id:{{=it[i].mid}},vid:{{=it[i].id}}})">{{=it[i].content}}</a>
+			    </div>
+			</div>
+			<div class="fn-clear"></div>
+			<div class="author ui-clr">
+			    <a onclick="openWin('minfo',{id:{{=it[i].mid}}})" class="blue">{{=it[i].username}}</a>
+			    <time>{{=it[i].addtime}}</time>
+			</div>
+        </div>
+    	{{}}}
+    	</script>
+  </div>
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+var page = 1;
+function loadData(page){
+    var url = 'content/share_ajax/all/'+page;
+    var reslut = false;
+    showprog();
+    ajaxRequest(url, 'GET', {}, function (ret, err) {
+        if (ret.data) {
+            var content = $api.byId('list-content');
+            var tpl = $api.byId('list-template').text;
+            var tempFn = doT.template(tpl);
+            $api.append(content, tempFn(ret.data));
+            reslut = true;
+        }else{
+            toast('没有更多了');
+        }
+        hideprog();
+   });
+   return reslut;
+}
+
+apiready = function(){
+   page=1;           
+   loadData(page);    
+   api.addEventListener({name: 'scrolltobottom'}, function(ret, err){
+	   page++;
+	   loadData(page);
+   });
+}
+</script>
+</body>
+</html>

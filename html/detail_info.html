@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>云购详情</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/yunbuy_detail.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    
+</head>
+<body>
+  <div id="header">
+	   <div class="active main-bor">
+		    <div class="icon_box" tapmode="" onclick="api.closeWin()"><i class="iconfont icon-fanhui"></i></div>
+		    <div class="toptit">图文详情</div>
+		    <div class="icon_box icon_two" tapmode="" onclick="openWin('cart')"><i class="iconfont icon-gouwuche"></i></div>
+		    <div class="icon_box" tapmode="" onclick="backhome()"><i class="iconfont icon-shouye"></i></div>
+	   </div>
+  </div>
+  <div id="content">
+    <div id="info-content" class="container detail-info"></div>
+  </div>
+  <script id="info-template" type="text/x-dot-template">
+  {{=it.info.goods_body}}
+  </script>
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+apiready = function(){
+   var id = api.pageParam.id;
+   getData('yunbuy/detail/'+id+'/info','info');
+}
+</script>
+</body>
+</html>

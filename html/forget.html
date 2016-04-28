@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>找回密码</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/login.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    
+</head>
+<body>
+<div id="header">
+   <div class="cart active">
+	    <div class="icon_box" tapmode="" onclick="api.closeWin()"><i class="iconfont icon-fanhui"></i></div>
+	    <div class="toptit">找回密码</div>
+	    <div class="icon_box" tapmode="" onclick="closetoWin()"><i class="iconfont icon-shouye"></i></div>
+   </div>
+</div>
+<div id="content" class="container main">
+    <div class="user-box">
+        <form id="regForm">
+            <div class="form-box">
+                <div class="input">
+                    <i class="iconfont icon-dengluzhanghao01"></i>
+                    <div class="txt">
+                    <input type="text" placeholder="请输入手机号码" autocomplete="false" name="mobile" id="mobile" data-rule="m" data-nullmsg="请填写手机号" />
+                    </div>
+                </div>
+                <div class="input code ui-left">
+                <i class="iconfont icon-yanzhengma"></i>
+                <div class="txt">
+                <input type="text" placeholder="请输入验证码" name="sms_code" id="sms_code" data-rule="n" data-nullmsg="请输入验证码" />
+                </div>
+            </div>
+            <input type="button" class="red_btn cbtn ui-left" id="btnSms" onclick="getSmsVerify('sms_password')" value="获取短信" />
+            </div>
+            <input class="btn" id="submit" type="button" value="找回密码"/>
+            <div class="tc" style="padding-top:50px;">
+              <a tapmode="" onclick="openWin('login')">已有账号？立即登录</a>
+            </div>
+        </form>
+
+    </div>
+</div>
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/availdate.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+$(function(){
+  ac.form({
+	    area: "#regForm",
+	    btn: "#submit",
+	    singleError: function (e, msg) {
+	        toast(msg);
+	    },
+	    endSuccess: function (data) {
+	        showprog();
+	        ajaxRequest('member/forget', 'POST', {values:data}, function (ret, err) {
+		        hideprog();
+		        if(ret.code==0){
+		          toast(ret.msg);
+		        }else{
+		          openWin('resetpass',{'username':ret.data.username,'code':ret.data.code});
+		        }
+		   });
+	    }
+  });
+});
+apiready = function(){
+  if(uid) openWin('user');
+}
+window.addEventListener('load', function() {
+  FastClick.attach(document.body);
+}, false);
+</script>
+</body>
+</html>

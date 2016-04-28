@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>夺宝详情</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/order.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    
+</head>
+<body>
+  <div id="header">
+	   <div class="active">
+		    <div class="icon_box" tapmode="" onclick="api.closeWin()"><i class="iconfont icon-fanhui"></i></div>
+		    <div class="toptit">领取奖励</div>
+		    <div class="icon_box " tapmode="" onclick="closetoWin()"><i class="iconfont icon-shouye"></i></div>
+	   </div>
+  </div>
+  <div id="content" class="container main">
+	    <form id="order">
+	        <div class="tips-m">
+	            <ul class="m-cart-address" id="address-content">
+	                <script id="address-template" type="text/x-dot-template">
+	                {{ for(var i=0; i< it.addressList.length; i++) { }}
+	                <li id="address-{{=it.addressList[i].id}}" {{? it.addressList[i].id==it.order_address_id}} class="on"{{?}}>
+	                <b>{{? it.addressList[i].id==it.order_address_id}}寄送至：{{?}}</b>
+	                <label>
+	                    <input type="radio" name="address_id" value="{{=it.addressList[i].id}}" data-rule="*" data-nullmsg="请选择收货地址" onchange="changeAddress('{{=it.addressList[i].id}}')" {{? it.addressList[i].id==it.order_address_id}}checked{{?}} />
+	                    {{=it.addressList[i].area}} {{=it.addressList[i].address}}（{{=it.addressList[i].name}} 收）<span>{{=it.addressList[i].mobile}}</span>
+	                </label>
+	                </li>
+	                {{}}}
+	                </script>
+	            </ul>
+	        </div>
+	        <div class="title-o">订单商品</div>
+	        <div class="pay-list">
+	            <ul id="cart-content">
+	                <script id="cart-template" type="text/x-dot-template">
+	                {{ for(var i=0; i< it.cart.length; i++) { }}
+	                <li class="ui-clr">
+	                    <span class="name">{{=it.cart[i].goods_name}}</span>
+	                    <span class="num"><b class="red">￥{{=it.cart[i].market_price}}</b></span>
+	                </li>
+	                <input type="hidden" name="extension_id" data-rule="" value="{{=it.cart[i].extension_id}}"/>
+	                <input type="hidden" name="extension_code" data-rule="" value="{{=it.cart[i].cart_type}}"/>
+	                {{}}}
+	                </script>
+	            </ul>
+	        </div>
+	        <div class="title-o">订单备注</div>
+	        <div class="order-area">
+	            <textarea name="goods_info" style="height:60px;border:0; width:100%;"></textarea>
+	        </div>
+	        <div class="foot-view">
+		        <div class="order-submit">
+		            <button class="w100 red_btn" id="submit" type="button">确认领取</button>
+		        </div>
+	        </div>
+	    </form>
+	</div>
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/availdate.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+var id = '';
+$(function(){
+  ac.form({
+	    area: "#order",
+	    btn: "#submit",
+	    singleError: function (e, msg) {
+	        toast(msg);
+	    },
+	    endSuccess: function (data) {
+	        showprog();
+	        ajaxRequest('order/done', 'POST', {values:data}, function (ret, err) {
+		        hideprog();
+		        toast(ret.msg);
+		        if (!ret.code) {
+		            openWin('member_order');
+		        }
+		        
+		   });
+	    }
+  });
+});
+function changeAddress(id){
+   $('.m-cart-address li').removeClass('on').find('b').html('');
+   $('#address-'+id).addClass('on').find('b').html('寄送至：');
+}
+apiready = function(){
+   id = api.pageParam.id>0 ? api.pageParam.id : '';
+   ajaxRequest('order/buy', 'POST', {values:{id:id,type:3}}, function (ret, err) {
+      var data = ret.data;
+      if(ret.code){
+         var page = ret.code==3 ? 'member_address' : 'member_luck';
+         toast(ret.msg);
+         openWin(page);
+      }else{
+         temp(data,'address');
+         temp(data,'cart');
+         $("textarea[name='goods_info']").val(data.tips);
+      }
+   });
+}
+</script>
+</body>
+</html>

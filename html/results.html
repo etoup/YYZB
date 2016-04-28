@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>最新揭晓</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/yunbuy.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>  
+</head>
+<body>
+<div class="pro-view shareList">
+    <ul class="goodList" id="win-content">
+   </ul>
+    <script id="win-template" type="text/x-dot-template">
+    {{ for(var i=0; i< it.list.length; i++) { }}
+    <li class="item item-db flex_box">
+	    <div class="pic" onclick="openWin('yunbuy_detail',{id:{{=it.list[i].buy_id}}})">
+			<img src="{{=it.list[i].imgurl_thumb}}"/>
+		</div>
+		<div class="info flex_con">
+		    <p class="title"><a onclick="openWin('yunbuy_detail',{id:{{=it.list[i].buy_id}}})">(第{{=it.list[i].qishu}}期){{=it.list[i].goods_name}}</a></p>
+		    <p>获得者：<a onclick="openWin('minfo',{id:{{=it.list[i].mid}},type:'dbCod'})" class="blue">{{=it.list[i].username}}</a></p>
+		    <p>参与<span class="red">{{=it.list[i].qty}}</span>人次</p>
+		    <p>幸运码：<span class="red">{{=it.list[i].luck_code}}</span></p>
+		    <p>揭晓时间：<span>{{=it.list[i].end_time}}</span></p>
+		</div>
+		<div class="good-list"><img src="{{=it.list[i].photo}}" /></div>
+	</li>
+	{{ } }}
+	</script>
+	<script id="lottery-template" type="text/x-dot-template">
+    {{ for(var i=0; i< it.list.length; i++) { }}
+	<li class="item-djx flex_box" id="itemDjx{{=it.list[i].buy_id}}" q="{{=it.list[i].qihao}}">
+	    <div class="pic" onclick="openWin('yunbuy_detail',{id:{{=it.list[i].buy_id}}})">
+	        <a ><img src="{{=it.list[i].imgurl_thumb}}" /></a><em></em>
+	    </div>
+	    <div class="info">
+	        <p class="title"><a onclick="openWin('yunbuy_detail',{id:{{=it.list[i].buy_id}}})">(第{{=it.list[i].qishu}}期){{=it.list[i].title}}</a></p>
+	        <p class="price">价值：<span class="color">{{=it.list[i].g_price}}</span></p>
+	        <div class="count">揭晓倒计时 <font id="leftTimeJx{{=it.list[i].buy_id}}"></font></div>
+	        <div class="count jx-ing" style="display: none;">开奖计算中...</div>
+	    </div>
+	</li>
+	{{ } }}
+	</script>
+</div>
+<input type="hidden" name="ids" id="ids" value="" />
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/frames/zepto.min.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/lefttime_jx.js"></script>
+<script type="text/javascript">
+var page = 1;
+function loadData(page){
+    var url = 'content/win/'+page;
+    var reslut = false;
+    showprog();
+    ajaxRequest(url, 'GET', {}, function (ret, err) {
+        if (ret.data) {
+            var content = $api.byId('win-content');
+            var tpl = $api.byId('win-template').text;
+            var tempFn = doT.template(tpl);
+            $api.append(content, tempFn(ret.data));
+            reslut = true;
+        }else{
+            toast('没有更多了');
+        }
+        hideprog();
+   });
+   return reslut;
+}
+apiready = function  () {
+    page=1;           
+    loadData(page);    
+    api.addEventListener({name: 'scrolltobottom'}, function(ret, err){
+       page++;
+       loadData(page);
+    });
+    api.setRefreshHeaderInfo({
+        visible: true,
+        bgColor: '#f2f2f2',
+        textColor: '#4d4d4d',
+        textDown: '下拉刷新...',
+        textUp: '松开刷新...',
+        showTime: true
+    }, function(ret, err){
+        $api.byId('win-content').innerHTML='';
+        page=1;
+        loadData(1);
+        $('#ids').val('');
+        compaceIds();
+        setInterval('compaceIds()',5*1000);
+        api.refreshHeaderLoadDone();
+    });
+    compaceIds();
+    setInterval('compaceIds()',5*1000);
+}
+function compaceIds(){
+    ajaxRequest('content/ajaxIds', 'POST', {values:{skin:'index_mobile','ids':$('#ids').val()}}, function (ret, err) {
+	    if(ret.error==1){
+	        $('.item-djx').remove();
+            $('#ids').val(ret.ids);
+			var tpl = $api.byId('lottery-template').text;
+			var tempFn = doT.template(tpl);
+            $('#win-content').prepend(tempFn(ret.data));
+            var it = ret.data;
+            for(var i=0; i< it.list.length; i++){
+            onload_leftTime_jx(it.list[i].buy_id,it.list[i].has_time,'index_mobile');
+            }
+        }
+	});
+}
+</script>
+</body>
+</html>

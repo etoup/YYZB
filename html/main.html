@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>首页</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/plugins/swiper.min.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/main.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>    
+</head>
+<body>
+<div id="main">
+	    <script id="banner-template" type="text/x-dot-template">
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    {{ for(var i=0; i< it.length; i++) { }}
+                    <div class="swiper-slide" {{? it[i].page}}onclick="openWin('{{=it[i].page}}',{{=it[i].title}})"{{?}} {{? it[i].tab}}onclick="opentoTab('{{=it[i].tab}}',{{=it[i].title}})"{{?}}>
+                        <img src="{{=it[i].path}}"/>
+                    </div>
+                    {{ } }}
+                </div>
+                <!-- Add Pagination -->
+                <div class="swiper-pagination swiper-pagination-white"></div>
+            </div>
+	    </script>
+	    <div class="banner">
+            <div class="slider" id="banner-content">
+
+            </div>
+        </div>
+		<ul class="fenlei new-index flex_box">
+            <li>
+                <a onclick="openWin('classify')">
+                    <i class="iconfont icon-fenlei" style="background: #4cb4fb;"></i>
+                    <p>分类</p>
+                </a>
+            </li>
+            <li>
+                <a onclick="opentoTab('yunbuy');">                
+                    <i class="iconfont icon-yiyuangoujilu" style="background: #e54048;"></i>
+                    <p>所有商品</p>
+                </a>
+            </li>
+            <li>
+                <a onclick="opentoTab('yunbuy',{type:2});">                
+                    <i class="iconfont icon-mianfei" style="background: #71cb45;"></i>
+                    <p>免费云购</p>
+                </a>
+            </li>
+            <li>
+                <a onclick="opentoTab('results');">                                
+                    <i class="iconfont icon-jiang" style="background: #ffc80b;"></i>
+                    <p>最新揭奖</p>
+                </a>
+            </li>
+            <li>
+                <a onclick="openWin('share');">                                
+                    <i class="iconfont icon-xiangji" style="background: #f60;"></i>
+                    <p>晒单</p>
+                </a>
+            </li>
+        </ul> 
+		<section class="section1">
+		    <div class="new-index-top"><a onclick="opentoTab('results');">最新揭晓</a></div>
+		    <ul class="new-index-1" id="win-content"></ul>
+			<input type="hidden" name="ids" id="ids" value=""/>
+	    </section>
+	    <script id="win-template" type="text/x-dot-template">
+	    {{ for(var i=0; i< it.luck_db.length; i++) { }}
+        <li class="item-db flex_con" id="itemDjx{{=it.luck_db[i].buy_id}}" q="{{=it.luck_db[i].qihao}}">
+          <div class="box">
+		    <em><a onclick="openWin('yunbuy_detail',{id:{{=it.luck_db[i].buy_id}}})"><img width="93" src="{{=it.luck_db[i].imgurl_thumb}}"></a></em>
+		    <div class="new-index-2">
+		        <span class="tit"><a onclick="openWin('yunbuy_detail',{id:{{=it.luck_db[i].buy_id}}})">(第{{=it.luck_db[i].qishu}}期){{=it.luck_db[i].goods_name}}</a></span>
+		        <p>获得者:<a onclick="openWin('minfo',{id:{{=it.luck_db[i].mid}}})">{{=it.luck_db[i].username}}</a></p>
+		    </div>
+		  </div>  
+		</li>
+        {{ } }}
+        </script>
+        <script id="lottery-template" type="text/x-dot-template">
+	    {{ for(var i=0; i< it.list.length; i++) { }}
+	    {{? it.list[i].wait_status==0}}
+	    <li class="item-db item-wait flex_con" id="itemDjx{{=it.list[i].buy_id}}" q="{{=it.list[i].qihao}}">
+          <div class="box">
+		    <em><a onclick="openWin('yunbuy_detail',{id:{{=it.list[i].buy_id}}})"><img width="93" src="{{=it.list[i].imgurl_thumb}}"></a></em>
+		    <div class="new-index-2">
+		        <span class="tit"><a onclick="openWin('yunbuy_detail',{id:{{=it.list[i].buy_id}}})">(第{{=it.list[i].qishu}}期){{=it.list[i].title}}</a></span>
+	            <font class="lefttime"><font id="leftTimeJx{{=it.list[i].buy_id}}"></font></font>
+	            <font class="jx-ing org" style="display:none;">开奖计算中...</font>
+		    </div>
+		  </div>  
+		</li>
+		{{?}}
+		{{}}}
+        </script>
+        <div id="qty_1212"></div>
+        <section class="section2">
+	        <div class="new-index-top"><a onclick="opentoTab('yunbuy');">热门云购</a></div>
+	        <div id="hot-content" class="transitions-enabled infinite-scroll clearfix new-index2">
+		    </div>
+	    </section>
+		<script id="hot-template" type="text/x-dot-template">
+	    {{ for(var i=0; i< it.yunbuy.length; i++) { }}
+	    <div class="new-box">
+          <div class="box">
+            <em><a onclick="openWin('yunbuy_detail',{id:{{=it.yunbuy[i].buy_id}}})"><img alt="(第{{=it.yunbuy[i].qishu}}期){{=it.yunbuy[i].title}}" src="{{=it.yunbuy[i].imgurl_src}}" id="buy_img_{{=it.yunbuy[i].buy_id}}"></a></em>
+            <h5 onclick="openWin('yunbuy_detail',{id:{{=it.yunbuy[i].buy_id}}})">{{=it.yunbuy[i].title}}</h5>
+            <dl class="new-index2-1">
+                <dd>
+                    <div class="index-n-1">揭晓进度：<span>{{=it.yunbuy[i].jindu}}%</span></div>
+                    <p class="index-n-2"><span style="width:{{=it.yunbuy[i].jindu}}%"></span></p>
+                </dd>
+                <dt><i class="iconfont icon-gouwuche1"  onclick="addToCart('{{=it.yunbuy[i].buy_id}}','{{? it.yunbuy[i].type == 2}}free{{?}}',this)"></i></dt>
+           </dl>
+          </div>
+        </div>
+        {{ } }}
+	    </script>
+	  </div>
+<script type="text/javascript" src="../script/frames/zepto.min.js"></script>
+<script type="text/javascript" src="../script/api.js"></script> 
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/lefttime_jx.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/plugins/swiper.min.js"></script>
+
+<script type="text/javascript">
+function initSlide(){
+    var swiper = new Swiper('.swiper-container', {
+        pagination: '.swiper-pagination',
+        paginationClickable: true,
+        // Disable preloading of all images
+        preloadImages: false,
+        // Enable lazy loading
+        lazyLoading: true,
+        autoplay: 2500,
+        autoplayDisableOnInteraction: false,
+        loop: true
+    });
+}
+
+function getBanner(id) {
+    showprog();
+    var getTabBarBannerUrl = 'home/getbanner';
+    ajaxRequest(getTabBarBannerUrl, 'POST', {values:{id:10}}, function (ret, err) {
+        if (ret) {
+            temp(ret.data,'banner');
+            initSlide();
+        } else {
+            api.alert({
+                msg: err.msg
+            });
+        }
+    })
+}
+function loadData(){
+	ajaxRequest('home/getindexdata', 'GET', {}, function (ret, err) {
+	    if (ret) {
+	       var data = ret.data;
+		   temp(data,'win');
+		   temp(data,'hot');
+		   hideprog();
+	    } else {
+	        toast(err.msg);
+	    }
+	});
+}
+function compaceIds(){
+    ajaxRequest('content/ajaxIds', 'POST', {values:{skin:'index_mobile','ids':$('#ids').val()}}, function (ret, err) {
+	    if(ret.error==1){
+	        $('.item-wait').remove();
+            $('#ids').val(ret.ids);
+			var tpl = $api.byId('lottery-template').text;
+			var tempFn = doT.template(tpl);
+            $('#win-content').prepend(tempFn(ret.data));
+            var it = ret.data;
+            for(var i=0; i< it.list.length; i++){
+              onload_leftTime_jx(it.list[i].buy_id,it.list[i].has_time,'index_mobile');
+            }
+        }
+	});
+}
+apiready = function(){
+    getBanner(api.pageParam.tid,1);
+    loadData();
+    api.execScript({
+       name : 'root',
+       script : "getlogo()"
+    });  
+    //pull to refresh
+    api.setRefreshHeaderInfo({
+        visible: true,
+        // loadingImgae: 'wgt://image/refresh-white.png',
+        bgColor: '#f2f2f2',
+        textColor: '#4d4d4d',
+        textDown: '下拉刷新...',
+        textUp: '松开刷新...',
+        showTime: true
+    }, function (ret, err) {
+        showprog();
+        //$('#ids').val('');
+        //window.clearInterval(timeID_jx);
+        compaceIds();
+        setInterval('compaceIds()',5*1000);
+        ajaxRequest('home/getindexdata', 'GET', {}, function (ret, err) {
+		    if (ret) {
+		       var data = ret.data;
+			   temp(data,'hot');
+			   hideprog();
+		    } else {
+		        toast(err.msg);
+		    }
+		});
+        api.refreshHeaderLoadDone();
+        
+    });
+
+    api.addEventListener({
+        name: 'scrolltobottom'
+    }, function (ret, err) {
+        showprog();
+    });
+    compaceIds();
+    setInterval('compaceIds()',5*1000);
+};
+</script>
+</body>
+</html>

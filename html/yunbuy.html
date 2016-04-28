@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>所有夺宝</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/yunbuy.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+</head>
+<body>
+  <div class="flex_con yungou-bg">
+    <ul class="new-index1-top filter">
+        <li id="li_cate">全部分类</li>
+        <li type="" tapmode="hover" class="hover fli">最新</li>
+        <li type="1" tapmode="hover" class="fli">最快</li>
+        <li type="2" tapmode="hover" class="fli">最热</li>
+        <li type="3" tapmode="hover" class="fli">价格<i class="iconfont icon-jiantouxiangxia"></i></li>
+        <li type="4" tapmode="hover" class="fli">价格<i class="iconfont icon-jiantouxiangshang"></i></li>
+    </ul>
+    <div class="view-bg">
+    <div class="cate">
+        <ul class="ui-clr" id="cat-content">
+            
+        </ul>
+    </div>
+    <ul id="list-content" class="paiList">
+    
+    </ul>
+    </div>
+    <script id="list-template" type="text/x-dot-template">
+    {{ for(var i=0; i< it.yunbuy.length; i++) { }}
+    <li class="flex_box">
+	    <div class="pic ac">
+	        <a onclick="openWin('yunbuy_detail',{id:{{=it.yunbuy[i].buy_id}}})"><img alt="(第{{=it.yunbuy[i].qishu}}期){{=it.yunbuy[i].title}}" src="{{=it.yunbuy[i].imgurl_src}}" width="100" height="100" id="buy_img_{{=it.yunbuy[i].buy_id}}" /></a>
+	        {{? it.yunbuy[i].price > 1}} <span><img src="../image/{{=Math.floor(it.yunbuy[i].price)}}.png"></span>{{?}}
+	    </div>
+	    <div class="info">
+	        <p class="title" onclick="openWin('yunbuy_detail',{id:{{=it.yunbuy[i].buy_id}}})">{{=it.yunbuy[i].title}}</p>
+	        <div class="progressBar">
+	            <p class="wrap-bar">
+	                <span class="bar" style="width:{{=it.yunbuy[i].jindu}}%"></span>
+	            </p>
+                <div class="flex_con"><span class="ui-left">总需：{{=it.yunbuy[i].need_num}}</span><span class="ui-right">剩余：<ins>{{=it.yunbuy[i].end_num}}</ins></span></div>
+	        </div>
+	    </div>
+        <div class="yungou-buy">
+            <button class="add-btn" tapmode="add-btn" onclick="addToCart('{{=it.yunbuy[i].buy_id}}','{{? it.yunbuy[i].type == 2}}free{{?}}',this)"><i class="iconfont icon-gouwuche1"></i></button>                
+        </div>
+	</li>
+	{{ } }}
+	</script>
+  </div>
+<script type="text/javascript" src="../script/frames/zepto.min.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+var page = 1;
+var curtype = '';
+var order = '';
+var cid = '';
+var q = '';
+var zq = '';
+var type = '';
+$(function(){
+  $(".filter li").live('click',function(){
+    if($(this).attr("id")=='li_cate') return true;
+    $(this).siblings().removeClass();
+    $(this).addClass('hover');
+    order = $(this).attr('type');
+    $api.byId('list-content').innerHTML='';
+    page = 1;
+    loadData(page);
+  });
+  $('#li_cate').bind('click',function(){
+    var mainH = api.frameHeight;
+    if($('.cate').hasClass('cat_on')){
+      $('.cate').hide();
+    }else{
+      $('.cate').show();
+    }
+    $('.cate').toggleClass('cat_on');
+  });
+  $('#cat-content li').live('click',function(){
+    $('#li_cate').html($(this).html());
+    $('.cate').hide().toggleClass('cat_on');
+  });
+});
+function loadcat(param,key){
+  cid = param.cid;
+  zq = param.zq;
+  type = param.type;
+  $('#cat-content li').removeClass('hover');
+  $('.cat'+key).addClass('hover');
+  $api.byId('list-content').innerHTML='';
+  page = 1;
+  loadData(page);
+}
+function loadData(page){
+    var url = 'yunbuy/index/'+page+'?ajaxcontent=1&order='+order+'&cid='+cid+'&q='+q+'&zq='+zq+'&type='+type;
+    var reslut = false;
+    showprog();
+    ajaxRequest(url, 'GET', {}, function (ret, err) {
+        if (ret.data) {
+            var content = $api.byId('list-content');
+            var tpl = $api.byId('list-template').text;
+            var tempFn = doT.template(tpl);
+            $api.append(content, tempFn(ret.data));
+            reslut = true;
+        }else{
+            toast('没有更多了');
+        }
+        hideprog();
+   });
+   return reslut;
+}
+apiready = function() {
+    ckey = typeof(api.pageParam.ckey) != "undefined" ? api.pageParam.ckey : ''; 
+    cid = typeof(api.pageParam.cid) != "undefined" ? api.pageParam.cid : ''; 
+    q = typeof(api.pageParam.q) != "undefined" ? api.pageParam.q : '';  
+    type = typeof(api.pageParam.type) != "undefined" ? api.pageParam.type : '';  
+    zq = typeof(api.pageParam.zq) != "undefined" ? api.pageParam.zq : ''; 
+    page=1; 
+    ajaxRequest('yunbuy/index/', 'GET', {}, function (ret, err) {
+        if (ret) {
+            var content = $api.byId('cat-content');
+            var tpl = '';
+            var it = ret.data;
+            for(var i=0; i< it.cat.length; i++) {
+            tpl +='<li class="cat'+i+'" onclick="loadcat({'+it.cat[i].catname_en+'},'+i+')">'+it.cat[i].catname+'</li>'; 
+	            if(ckey==i){
+	               $('.cat'+ckey).addClass('hover');
+	               $('#li_cate').html(it.cat[i].catname);
+	            }
+            }
+            content.innerHTML = tpl;
+             
+        } else {
+            toast(err.msg);
+        }
+    })        
+    loadData(page);    
+    api.addEventListener({name: 'scrolltobottom'}, function(ret, err){
+       page++;
+       loadData(page);
+    }); 
+    api.setRefreshHeaderInfo({
+        visible: true,
+        bgColor: '#f2f2f2',
+        textColor: '#4d4d4d',
+        textDown: '下拉刷新...',
+        textUp: '松开刷新...',
+        showTime: true
+    }, function(ret, err){
+        $api.byId('list-content').innerHTML='';
+        page=1;
+        loadData(1);
+        api.refreshHeaderLoadDone();
+    });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>购物车</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/cart.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    
+</head>
+<body>
+<div id="header">
+   <div class="cart active">
+	    <div class="icon_box"><i class="iconfont icon-fanhui" tapmode="" onclick="api.closeWin()"></i></div>
+	    <div class="toptit">提交订单</div>
+	    <div class="icon_box "><i class="iconfont icon-shouye" tapmode="" onclick="closetoWin()"></i></div>
+   </div>
+</div>
+<div id="content" class="container main">
+    <div class="pay-list">
+        <ul id="list-content"></ul>
+        <script id="list-template" type="text/x-dot-template">
+        {{? it.goods}}
+        {{ for(var i=0; i< it.goods.length; i++) { }}
+            <li class="flex_wrap">
+                <div class="name"><input type="hidden" name="id[]" value="{{=it.goods[i].id}}">(第{{=it.goods[i].qishu}}期) {{=it.goods[i].goods_name}}</div>
+                <div class="num_box">
+	                <span class="num"><em class="red">{{=it.goods[i].qty}}</em>人次</span>
+	                <span class="num">&nbsp;参与<em class="red">{{=it.goods[i].multi}}</em>期</span>
+                </div>
+            </li>
+        {{ } }}
+        {{?}}
+        </script>
+    </div>
+    <div class="order-total">
+                商品合计：<strong style="font-size:14px;" id="total">0</strong><span id="unit">云购币</span>
+    </div>
+    
+    <div class="order-option">
+        <div class="checkBar" id="check-content">
+            <span>
+                <input type="checkbox" value="1" name="balance_pay" checked>
+                使用云购币：<b class="red">0</b> 个
+                账户余额：<b class="red">0</b>
+            </span>
+            <span>
+                <input type="checkbox" value="1" name="balance_pay" checked disabled="disabled">
+                使用拍币：<b class="red">0</b> 个
+            </span>
+        </div>
+        <script id="check-template" type="text/x-dot-template">
+            {{? it.is_share}}
+            <span style="display:none">
+                                    首次夺宝可使用分享码 <input type="text" name="sharecode" value="" size="5" class="w-number-input"> <span class="share_notice color01"></span>
+            </span>
+            {{?}}
+            {{? it.bonus}}
+            <span>
+		     <input type="checkbox" value="1" name="bonus_pay" checked>
+		                使用抵用券:<b class="red">{{=it.bonus.count}}</b>张&nbsp;&nbsp;价值:<b class="red">{{=it.bonus.money}}</b>个云购币
+		    </span><br>
+            {{?}}
+            {{? it.free !=1}}
+            <span>
+                 <input type="checkbox" value="1" name="balance_pay" checked>
+			                使用云购币:<b class="red">{{=it.member.db_points}}</b>个&nbsp;&nbsp;账户余额:<b class="red">{{=it.member.user_money_str}}</b>
+            </span>
+            {{??}}
+            <span>
+                <input type="checkbox" value="1" name="balance_pay" checked disabled="disabled">
+                                                使用拍币：<b class="red">{{=it.member.pay_points}}</b> 个
+            </span>
+            {{?}}
+        </script>
+    </div>
+    <div id="payment_bar">
+	    <ul id="payment">
+	      <li type="12">
+	        <div class="icon_box"><i class="iconfont icon-zhifubaozhifu"></i></div>
+	        <div class="text"><h2>支付宝支付</h2>使用支付宝支付</div>
+	        <div class="choose hover"><i class="iconfont icon-icon49"></i></div>
+	      </li>
+	      <li type="13">
+	        <div class="icon_box"><i class="iconfont icon-weixin"></i></div>
+	        <div class="text"><h2>微信支付</h2>使用微信支付</div>
+	        <div class="choose"><i class="iconfont icon-icon49"></i></div>
+	      </li>
+	    </ul>
+	    <input type="hidden" name="payment" value="12"/>
+    </div>
+</div>
+
+<footer class="foot-view">
+    <div id="submit-content">
+        <button class="w100 red_btn" id="submit">确 认 支 付</button>
+    </div>
+    <script id="submit-template" type="text/x-dot-template">
+    {{? it.free == 1 && it.disabled_sub}}
+    <button class="red_btn w100" onclick="openWin('user')">拍币不足，点击领拍币</button>
+    {{??}}
+    <button class="red_btn w100" id="submit">确 认 支 付</button>
+    {{?}}
+    </script>
+</footer>
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+var order_sn = "";
+var no = new Date().format("yyyyMMddHHmmss");
+var url = "";
+var notify_url = "";
+$(function(){
+  $("#payment li").click(function(){
+     $("#payment li").children("div.choose").removeClass('hover');
+     $(this).children('div.choose').addClass('hover');
+     $("input[name='payment']").val($(this).attr('type'));
+  });
+  $("#submit").live('click',function(){
+    showprog();
+    if(order_sn!=''){
+      pay_order();
+    }else{
+      submit_order();
+    }
+    api.execScript({
+       name : 'root',
+       script : "loadcart()"
+    });
+  });
+});
+function pay_order(){
+  var payment = $("input[name='payment']").val();
+  ajaxRequest('yunbuy/pay/'+order_sn, 'POST', {}, function (ret, err) {
+	    var data = ret.data;
+	    hideprog();
+	    if(data){
+	      function generatePresignMessage(channel_type){
+            order_sn = data.order_sn;
+			var param = {appId:"1408709961320306",
+						mhtCharset:"UTF-8",
+						mhtCurrencyType:"156",
+						mhtOrderAmt:data.order_amount*100,
+						mhtOrderDetail:"Android插件测试用例",
+						mhtOrderName:"Android插件测试用例",
+						mhtOrderNo:order_sn,
+						mhtorderStartTime:no,
+						mhtOrderType:"01",
+						notifyUrl:notify_url};
+			if(channel_type!=null&&!channel_type==""){
+				param["payChannelType"]=channel_type;
+			}
+			uzmoduledemo.generatePresignMessage(param, doSignature);
+		  }
+		  generatePresignMessage(payment);
+	    }else{
+	    }
+  });
+}
+function submit_order(){
+    var ids = '';
+    var i=0;
+    $("input[name='id[]']").each(function(){
+        i++;
+        ids += i==$("input[name='id[]']").length ? $(this).val() :$(this).val()+',';
+    });
+    var payment = $("input[name='payment']").val();
+    var bonus_pay = $("input[name='bonus_pay']").val();
+    var balance_pay = $("input[name='balance_pay']").val();
+    ajaxRequest('yunbuy/done', 'POST', {values:{ids:ids,bonus_pay:bonus_pay,balance_pay:balance_pay,free:api.pageParam.free,pay_code:'ipaynow'}}, function (ret, err) {
+	    var data = ret.data;
+	    hideprog();
+	    if(data){
+	        if(data.status==2){
+	          openWin('respon',{result:1});
+	        }else{
+	          order_sn = data.order_sn;
+			  notify_url = data.payment.notify_url;
+	          function generatePresignMessage(channel_type){
+				var param = {appId:data.payment.app_id,
+							mhtCharset:"UTF-8",
+							mhtCurrencyType:"156",
+							mhtOrderAmt:data.order_amount*100,
+							mhtOrderDetail:"订单支付"+data.order_sn,
+							mhtOrderName:"订单支付"+data.order_sn,
+							mhtOrderNo:order_sn,
+							mhtorderStartTime:no,
+							mhtOrderType:"01",
+							notifyUrl:notify_url};
+				if(channel_type!=null&&!channel_type==""){
+					param["payChannelType"]=channel_type;
+				}
+				uzmoduledemo.generatePresignMessage(param, doSignature);
+			  }
+			  
+			  generatePresignMessage(payment);
+	        }
+	    }else{
+		    toast(ret.msg);
+	    }
+   });
+}
+
+function doSignature(ret, err){
+	if(ret.result=="fail"){
+        alert(ret.msg);
+    }
+    var preSignStr=ret.preSignStr;
+    var param = {preSignStr:preSignStr,post_content:"paydata="+preSignStr,post_url:url};
+    uzmoduledemo.doSignature(param, pay);
+}
+
+function pay(ret, err){
+    if(ret.result=="fail"){
+        alert(ret.msg);
+    }
+    var paydata=ret.preSignStr+"&"+ret.resultStr;
+    var param = {data:paydata};
+    uzmoduledemo.pay(param, callBack);
+}
+
+function callBack(ret, err){
+    alert("响应吗:"+ret.respCode+"\n"+"错误码:"+ret.errorCode+"错误信息:"+ret.errorMsg);
+//  if(ret.respCode=='01'){
+//    openWin('respon',{result:1});
+//  }
+//  if(ret.errorMsg){
+//    toast("错误码:"+ret.errorCode+"错误信息:"+ret.errorMsg);
+//  }
+}
+var uzmoduledemo = null;
+apiready = function(){
+   uzmoduledemo = api.require('ipaynow');
+   showprog();
+   ajaxRequest('yunbuy/checkout', 'POST', {values:{ids:api.pageParam.ids,free:api.pageParam.free}}, function (ret, err) {
+	    var data = ret.data;
+	    url = data.pay_url;
+	    if(data){
+		    temp(data,'list');
+		    $("#total").html(data.total);
+		    $("#unit").html(data.unit);
+		    temp(data,'check');
+		    temp(data,'submit');
+		    if(data.disabled_sub!=1) $("#payment_bar").hide();
+		    hideprog();
+	    }else{
+	        hideprog();
+		    toast(ret.msg);
+		    openWin('cart');
+	    }
+   });
+}
+window.addEventListener('load', function() {
+  FastClick.attach(document.body);
+}, false);
+</script>
+</body>
+</html>

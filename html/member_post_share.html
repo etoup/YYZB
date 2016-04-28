@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>夺宝详情</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/member_db.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    
+</head>
+<body style="background-color: #F2F2F2;">
+  <div id="header">
+	   <div class="active">
+		    <div class="icon_box" tapmode="" onclick="api.closeWin()"><i class="iconfont icon-fanhui"></i></div>
+		    <div class="toptit">晒单</div>
+		    <div class="icon_box " tapmode="" onclick="closetoWin()"><i class="iconfont icon-shouye"></i></div>
+	   </div>
+  </div>
+  <div id="content" class="container main">
+	    <div class="tips-m">
+	        <div class="prompt">每个订单只要有一次晒单机会，发布晒单您将获得（<b class="red">1-5<font class="lang" lang="db_points">夺宝币</font></b>）的奖励，好好把握机会吧！</div>
+	        <div class="prompt">
+	            <span>普通晒单（<b class="red">1个<font class="lang" lang="db_points">夺宝币</font></b>）内容要求包含>>>></span><br>
+	            <span class="gray">
+	            1、中奖感言；<br>
+	            2、中奖商品真实拍摄照片；
+	            </span>
+	        </div>
+	        <div class="prompt">
+	            <span>精华晒单（<b class="red">5个<font class="lang" lang="db_points">夺宝币</font></b>）内容要求包含>>>></span><br>
+	            <span class="gray">
+	            1、刷脸和刷中奖产品，合照图片清晰，无倒置图片（即：您或您的亲友与物品的开心合照）；<br>
+	            2、中奖短信通知截图、物品高清照；<br>
+	            2、文字言之有物，分享中奖喜悦得当，寄语{$site_config.site_name}、正品、真实可信描述以及个人主观评价。
+	            </span>
+	        </div>
+	    </div>
+	
+	    <div class="form-m">
+	        <form action="" target="iframeNews" method="post" id="submit_form">
+	            <div class="item ui-clr">
+	                <dl>
+	                    <dt class="color03">晒单商品：</dt>
+	                    <dd style="line-height: 2rem; height:60px;" id="info-content">
+	                        <script id="info-template" type="text/x-dot-template">
+	                        <img src="{{=it.thumb}}" width="64" style="float:left;margin-right:10px;" />
+	                        {{=it.title}}
+	                        </script>
+	                    </dd>
+	                </dl>
+	            </div>
+	            <div class="fn-clear"></div>
+	            <div class="item ui-clr">
+	                <dl>
+	                    <dt class="color03">晒单标题：</dt>
+	                    <dd>
+	                        <input type="text" class="input-m" name="title" data-rule="*" data-nullmsg="请输入晒单标题" value="" />
+	                    </dd>
+	                </dl>
+	            </div>
+	            <div class="item ui-clr">
+	                <dl>
+	                    <dt class="color03">晒单内容：</dt>
+	                    <dd>
+	                        <textarea name="content" class="input-m" style="padding:5px;width:98%;height:80px;" data-rule="*" data-nullmsg="请输入晒单内容"></textarea>
+	                    </dd>
+	                </dl>
+	            </div>
+	            <div class="item ui-clr" style="padding-bottom:40px;">
+	                <dl>
+	                    <dt class="color03">上传图片：</dt>
+	                    <dd style="line-height: 2;" id="btn">
+	                        
+	                    </dd>
+	                </dl>
+	            </div>
+	            <div class="foot-view">
+			        <div class="order-submit">
+			            <button class="w100 red_btn" id="submit" type="button">提交晒单</button>
+			        </div>
+		        </div>
+	        </form>
+	    </div>
+	</div>
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/availdate.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<link href="../script/webuploader/webuploader.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="../script/webuploader/webuploader.js"></script>
+<script type="text/javascript">
+var id = '';
+$(function() {					 					
+	ac.form({
+		area : "#submit_form",
+		btn : "#submit",
+		singleError : function(e, msg) {
+			toast(msg);
+		},
+		endSuccess : function(data) {
+			showprog();
+			ajaxRequest('member/post_share/'+id, 'POST', {
+				values : data
+			}, function(ret, err) {
+				hideprog();
+				toast(ret.msg);
+				if(ret.code==0){
+				  openWin('member_order');
+				}
+			});
+		}
+	});
+});
+apiready = function(){
+   id = api.pageParam.id>0 ? api.pageParam.id : '';
+   showprog();
+   ajaxRequest('member/post_share/'+id, 'GET', {}, function (ret, err) {
+        hideprog();
+        if(ret.code>0){
+          toast(ret.msg);
+        }else{
+          temp(ret.data,'info');
+          $("#btn").html(ret.data.btn);
+        }
+   });
+}
+
+
+
+</script>
+</body>
+</html>

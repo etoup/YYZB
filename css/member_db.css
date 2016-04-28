@@ -1,0 +1,226 @@
+#header .active{border-bottom: 1px solid #d7d7d7; background: #fff; color: #666;height:50px;}
+/**选项卡3*/.tab-cell {
+	height: 40px;
+	line-height: 40px;
+	text-align: center;
+	background: #fff;
+	overflow: hidden;
+}
+.tab-cell li {
+	width: 20%;
+	float: left;
+}
+.tab-cell li a {
+	display: block;
+	height: 100%;
+	border-right:1px solid #e6e6e6;
+	color: #666;
+}
+.tab-cell li.last a {
+	border: 0;
+}
+.tab-cell li.on a {
+	color: #f02c50;
+}
+.tips-m {
+	background: #fff;
+	padding:10px;
+	color: #666;
+	border-bottom: 1px solid #e6e6e6;
+}
+.tips-m a {
+	white-space: nowrap;
+}
+.prompt {
+	background: #fffce2;
+	border: 1px solid #ffdd99;
+	color: #ff6600;
+	padding: 5px 10px;
+	margin-top: 5px;
+}
+.list_foot {
+	background: #F2F2F2;
+	border-top: 1px solid #e6e6e6;
+	padding: 10px 20px;
+	font-size: 1.4rem;
+	color: #000;
+}
+/*list01*/.list01 {
+	border-top:1px solid #e6e6e6;
+	padding-top:5px;
+}
+.list01 dl {
+	border-bottom:1px solid #e6e6e6;
+}
+.list01 dl dt {
+	background: #f2f2f2;
+	padding: 8px 10px;
+	overflow: hidden;
+}
+.list01 dl dt a font {
+	color: #f01f46;
+}
+.list01 dl dt b {
+	color: #f01f46;
+}
+.list01 dl dd {
+	background: #fff;
+}
+.list01 dl dd table {
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	border-collapse: collapse;
+}
+.list01 dl dd table th,.list01 dl dd table td {
+	border-top:1px solid #e6e6e6;
+	padding: 7px 10px;
+	border-collapse: collapse;
+	font-weight: normal;
+}
+.list01 dl dd table th {
+	border-right: 1px solid #e6e6e6;
+	width: 40%;
+	text-align: right 
+}
+.list-address dl {
+	border-top: 2px solid #e6e6e6;
+	color: #000;
+}
+.list-address dl dd table th {
+	width: 25%;
+}
+.list-db {
+	background: #fff;
+}
+.list-db dl {
+	margin:0 10px;
+	padding-bottom:10px;
+	border: 0;
+	border-top:1px solid #ff6600 
+}
+.list-db dl dd table th {
+	width: 28%;
+}
+.list-db dl dd table th,.list-db dl dd table td {
+	border: 1px solid #e6e6e6;
+}
+.list-db dl dt {
+	position: relative;
+	padding-right:15px;
+}
+.list-db dl dt .db-img {
+	position: absolute;
+	left:10px;
+	top:10px;
+	width: 90px;
+}
+.list-db dl dt .db-img img {
+	max-width: 100%
+}
+.list-db dl dt .db-txt {
+	padding-left:100px;
+}
+.list-db dl dt .db-txt .p1 {
+	margin-bottom: 5px;
+}
+.list-db dl dt .db-nums li {
+	float: left;
+}
+.list-db dl dt .db-nums li.tr {
+	float: right;
+}
+.list-db .db-order {
+	border-bottom: 1px solid #e6e6e6;
+	font-size: 12px;
+}
+.db-jdt {
+	width: 100%;
+	background: #e6e6e6;
+	height: 12px;
+	overflow: hidden;
+	border-radius: 5px;
+	margin: 2px 0;
+}
+.db-jdt span {
+	display: block;
+	height: 100%;
+	float: left;
+	background: #ff9900;
+	border-radius: 5px;
+}
+.type-free {
+	background-color: #00A47C;
+	color: #FFF;
+	padding: 0 5px;
+	border-radius:3px;
+}
+.list-luck {
+	padding: 0px 10px 0;
+	background: #fff;
+}
+.list-luck dl {
+	padding-bottom:10px;
+}
+.list-luck dl dt {
+	background: #fff;
+	margin-bottom: 5px;
+}
+.list-luck dl dd {
+	padding-left:100px;
+	position: relative;
+	min-height: 80px;
+	line-height: 1.5em;
+}
+.list-luck dl dd .db-img {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 90px;
+}
+.list-luck dl dd .db-img img {
+	max-width: 100%;
+}
+
+
+
+.input-m {
+	height:30px;
+	background: #fff;
+	color: #333;
+	width:98%;
+	padding:0 5px;
+}
+textarea.input-m {
+	line-height: 1.5;
+}
+.form-m {
+	padding: 10px 10px;
+	font-size: 12px;
+	line-height: 32px;
+}
+.form-m .item {
+	padding-bottom: 10px;
+}
+.form-m .item dt {
+	float: left;
+	width:60px;
+	text-align: right;
+	white-space: nowrap;
+	overflow: hidden;
+}
+.form-m .item dd {
+	overflow: hidden;
+	margin-left:65px 
+}
+.form-m select {
+	height: 30px;
+	line-height: 30px;
+	border: 1px solid #e6e6e6;
+	color: #333;
+}
+.form-m .tip-m {
+	color: #999;
+	line-height: 1.4;
+}
+.foot-view { position:fixed; left: 0; right: 0; bottom: 0; border: solid #dcdcdc; border-width: 1px 0; padding:8px 10px; height: 32px; line-height: 32px; background: #fff; font-size:1.2rem;}

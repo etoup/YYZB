@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	<meta name="format-detection" content="telephone=no" />
+	<title>购物车</title>
+	<link rel="stylesheet" type="text/css" href="../css/api.css"/>
+	<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+	<link rel="stylesheet" type="text/css" href="../css/user.css"/>
+	<link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+	<link rel="stylesheet" type="text/css" href="../css/member.css"/>
+</head>
+<body>	
+<div id="header">
+   <div class="cart active">
+	    <div class="icon_box" tapmode="" onclick="api.closeWin()"><i class="iconfont icon-fanhui"></i></div>
+	    <div class="toptit">充值</div>
+	    <div class="icon_box " tapmode="" onclick="closetoWin()"><i class="iconfont icon-shouye"></i></div>
+   </div>
+</div>
+<div id="content" class="container main">	
+<form action="">
+<div class="title-m2">
+<span class="color01">请您选择充值金额：</span>
+</div>
+<div class="re-money">
+<ul class="ui-clr">
+<li class="on"><label><input type="radio" class="radio" name="amount" value="10" checked /> 10元</label></li>
+<li><label><input type="radio" class="radio" name="amount" value="50" /> 50元</label></li>
+<li><label><input type="radio" class="radio" name="amount" value="100" /> 100元</label></li>
+<li><label><input type="radio" class="radio" name="amount" value="200" /> 200元</label></li>
+<li><label><input type="radio" class="radio" name="amount" value="500" /> 500元</label></li>
+<li><label><input type="radio" class="radio" name="amount" value="1000" /> 1000元</label></li>
+<li>
+<label onclick="$(this).find('.input-m').focus();">
+<input type="radio" class="radio" name="amount" value="0" />
+<span>其它金额</span>
+<input type="text" name="other" class="input-m" style="width:80px;vertical-align:top;margin-top:4px;" maxlength="7" />
+</label>
+</li>
+</ul>
+</div>
+<div class="fn-clear"></div>
+<div id="payment_bar">
+    <div id="payment-content"></div>
+    <script id="payment-template" type="text/x-dot-template">
+    <ul id="payment">
+      {{? it.payment}}
+      {{ for(var i=0; i< it.payment.length; i++) { }}
+      <li type="{{=it.payment[i].pay_code}}">
+        <div class="icon_box"><i class="iconfont icon-{{=it.payment[i].pay_code}}"></i></div>
+        <div class="text"><h2>{{=it.payment[i].pay_name}}</h2>{{=it.payment[i].pay_desc}}</div>
+        <div class="choose {{? i==0}}hover{{?}}"><i class="iconfont icon-icon49"></i></div>
+      </li>
+      {{ } }}
+      {{?}}
+    </ul>
+    <input type="hidden" name="payment" value="{{? it.payment}}{{ for(var i=0; i< it.payment.length; i++) { }}{{? i==0}}{{=it.payment[i].pay_code}}{{?}}{{ } }}{{?}}"/>
+    </script>
+</div>
+</form>
+<footer class="foot-view">
+    <div id="submit-content">
+        <button class="w100 red_btn" id="submit">确 认 支 付</button>
+    </div>
+</footer>
+</div>
+<script type="text/javascript" src="http://web.iapppay.com/h5/v1.0.1/js/aibei_v1.1.0.js"></script>		
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/availdate.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/payment.js"></script>
+<script type="text/javascript">
+$(function(){
+  $(".ui-clr li input").click(function(){
+	   $(".ui-clr li").removeClass('on');
+	   $(this).parent().parent('li').addClass('on');
+	});
+  $("#payment li").live('click',function(){
+     $("#payment li").children("div.choose").removeClass('hover');
+     $(this).children('div.choose').addClass('hover');
+     $("input[name='payment']").val($(this).attr('type'));
+  });
+  $("#submit").click(function(){
+	   var amount = $('input[name=amount]:checked').val()>0 ? $('input[name=amount]:checked').val() :$('input[name=other]').val();
+	   var payment = $('input[name=payment]').val();
+	   showprog();
+	   ajaxRequest('member/recchage', 'POST', {values:{amount:amount,pay_code:payment}}, function (ret, err) {
+		    var data = ret.data;
+		    hideprog();
+		    if(data){
+		      var back_info=ret.data.payment;
+		      if(payment=='wxpayapp'){
+		        wxpay(back_info,1);
+		      }else if(payment=='aibei'){
+		        aibei(back_info,1);
+		      }
+		    }else{
+		      toast(ret.msg);
+		    }
+	  });
+	});
+});
+		    
+apiready = function() {
+    showprog();
+    ajaxRequest('member/recchage', 'GET', {}, function (ret, err) {
+	    hideprog();
+        temp(ret.data,'payment');
+    });
+    
+}
+</script>
+</body>
+</html>
